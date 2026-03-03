@@ -7,7 +7,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<title>Hosur Tax Command Centre v3 · AI-Powered</title>
+<title>Urban Tax — Property Tax Management Platform</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Roboto:wght@300;400;500;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
@@ -605,6 +605,159 @@ tbody td{padding:10px 14px;font-size:13px;vertical-align:middle}
   padding:12px 16px;margin-bottom:14px;font-size:13px;line-height:1.5;
 }
 
+/* ===== FIELD COLLECTOR MODE ===== */
+.field-mode-banner{
+  background:linear-gradient(135deg,#1a73e8,#0d47a1);
+  color:white;padding:10px 16px;border-radius:var(--radius);
+  margin-bottom:16px;display:flex;align-items:center;gap:10px;font-size:13px;
+}
+.gps-pulse{
+  width:12px;height:12px;border-radius:50%;background:#4cff72;flex-shrink:0;
+  animation:gpsPulse 1.5s infinite;
+}
+@keyframes gpsPulse{0%,100%{box-shadow:0 0 0 0 rgba(76,255,114,.4)}50%{box-shadow:0 0 0 8px rgba(76,255,114,0)}}
+.field-property-card{
+  background:var(--white);border-radius:var(--radius);border:1px solid var(--border);
+  margin-bottom:10px;overflow:hidden;
+  transition:all .2s;
+}
+.field-property-card.collected{border-color:var(--green);border-left:4px solid var(--green)}
+.field-property-card.skipped{border-left:4px solid var(--orange);opacity:.75}
+.field-property-card.pending{border-left:4px solid var(--red)}
+.fpc-hdr{padding:12px 14px;cursor:pointer;display:flex;align-items:center;gap:10px}
+.fpc-status{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.fpc-body{padding:0 14px 14px;display:none}
+.fpc-body.open{display:block}
+.photo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}
+.photo-thumb{
+  aspect-ratio:1;border-radius:8px;overflow:hidden;
+  border:2px solid var(--border);cursor:pointer;background:var(--light);
+  display:flex;align-items:center;justify-content:center;font-size:24px;
+}
+.photo-thumb img{width:100%;height:100%;object-fit:cover}
+.add-photo-btn{
+  aspect-ratio:1;border-radius:8px;border:2px dashed var(--border);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  cursor:pointer;gap:4px;font-size:11px;color:var(--grey);background:var(--light);
+  transition:all .2s;
+}
+.add-photo-btn:hover{border-color:var(--blue);color:var(--blue);background:var(--blue-l)}
+.collection-form{background:var(--light);border-radius:var(--radius-sm);padding:12px;margin-top:10px}
+.cf-label{font-size:11px;font-weight:600;color:var(--grey);text-transform:uppercase;letter-spacing:.3px;margin-bottom:4px;display:block}
+.cf-input{width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:7px;font-size:14px;outline:none;background:white;margin-bottom:10px;transition:border-color .2s}
+.cf-input:focus{border-color:var(--blue)}
+.collect-btn{background:var(--green);color:white;padding:10px;border-radius:8px;width:100%;font-size:14px;font-weight:600;font-family:var(--font-display)}
+.collect-btn:hover{background:#2e7d32}
+.skip-btn{background:var(--orange-l);color:#e65100;padding:8px;border-radius:8px;width:100%;font-size:12px;font-weight:500;font-family:var(--font-display);border:1px solid var(--orange);margin-top:6px}
+.property-sequence-bar{
+  background:var(--white);border-radius:var(--radius);border:1px solid var(--border);
+  padding:12px 16px;margin-bottom:16px;
+}
+.psb-track{
+  display:flex;gap:3px;flex-wrap:wrap;margin-top:8px;
+}
+.psb-dot{
+  width:14px;height:14px;border-radius:3px;flex-shrink:0;cursor:pointer;
+  transition:transform .15s;
+}
+.psb-dot:hover{transform:scale(1.3)}
+.psb-dot.collected{background:var(--green)}
+.psb-dot.current{background:var(--blue);animation:pulse .8s infinite}
+.psb-dot.skipped{background:var(--orange)}
+.psb-dot.pending{background:#e0e0e0}
+
+/* ===== FIELD TRACKER (SUPERVISOR VIEW) ===== */
+.tracker-map-box{
+  background:var(--white);border-radius:var(--radius);border:1px solid var(--border);
+  overflow:hidden;position:relative;height:380px;margin-bottom:16px;
+}
+.collector-ping{
+  position:absolute;transform:translate(-50%,-50%);cursor:pointer;
+  display:flex;flex-direction:column;align-items:center;
+}
+.cp-avatar{
+  width:36px;height:36px;border-radius:50%;display:flex;align-items:center;
+  justify-content:center;font-size:13px;font-weight:700;color:white;
+  border:3px solid white;box-shadow:0 2px 8px rgba(0,0,0,.3);
+}
+.cp-label{
+  font-size:9px;font-weight:700;background:rgba(0,0,0,.7);color:white;
+  padding:2px 6px;border-radius:10px;margin-top:3px;white-space:nowrap;
+}
+.cp-trail{
+  position:absolute;background:rgba(26,115,232,.15);
+  border-radius:50%;transform:translate(-50%,-50%);
+  animation:pingExpand 2s infinite;
+}
+@keyframes pingExpand{0%{width:30px;height:30px;opacity:1}100%{width:80px;height:80px;opacity:0}}
+.collection-event{
+  display:flex;gap:10px;padding:10px 0;border-bottom:1px solid #f1f3f4;
+  align-items:flex-start;
+}
+.collection-event:last-child{border-bottom:none}
+.ce-dot{width:8px;height:8px;border-radius:50%;background:var(--green);flex-shrink:0;margin-top:5px}
+.ce-dot.photo{background:var(--blue)}
+.ce-dot.skip{background:var(--orange)}
+
+/* ===== DATA IMPORT ===== */
+.import-zone{
+  border:2px dashed var(--border);border-radius:var(--radius);
+  padding:40px 24px;text-align:center;cursor:pointer;transition:all .2s;
+  background:var(--light);
+}
+.import-zone:hover,.import-zone.drag{border-color:var(--blue);background:var(--blue-l)}
+.import-zone-icon{font-size:40px;margin-bottom:12px}
+.import-zone h3{font-size:15px;font-weight:600;margin-bottom:6px}
+.import-zone p{font-size:12px;color:var(--grey)}
+.import-progress{margin-top:12px;display:none}
+.import-bar{height:6px;background:var(--border);border-radius:3px;overflow:hidden;margin-top:4px}
+.import-fill{height:100%;background:var(--blue);border-radius:3px;transition:width .3s}
+.field-map-pin{
+  position:absolute;transform:translate(-50%,-100%);cursor:pointer;
+  display:flex;flex-direction:column;align-items:center;
+}
+.fmp-circle{
+  width:24px;height:24px;border-radius:50%;border:3px solid white;
+  box-shadow:0 2px 6px rgba(0,0,0,.3);transition:transform .2s;
+}
+.fmp-circle:hover{transform:scale(1.3)}
+.fmp-circle.collected{background:var(--green)}
+.fmp-circle.skipped{background:var(--orange)}
+.fmp-circle.pending{background:var(--red)}
+.fmp-circle.no-contact{background:var(--yellow)}
+.fmp-pin{width:2px;height:8px;background:rgba(0,0,0,.4);margin-top:-1px}
+
+/* ===== MUNICIPALITY CONFIG ===== */
+.config-form{max-width:520px}
+.config-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+@media(max-width:600px){.config-row{grid-template-columns:1fr}}
+.setup-wizard-steps{display:flex;gap:0;overflow-x:auto;margin-bottom:24px;padding-bottom:4px}
+.wz-step{
+  display:flex;align-items:center;gap:6px;flex-shrink:0;
+  padding:8px 12px;font-size:12px;font-weight:500;color:var(--grey);
+}
+.wz-step.done{color:var(--green)}
+.wz-step.active{color:var(--blue);font-weight:600}
+.wz-num{
+  width:22px;height:22px;border-radius:50%;border:2px solid currentColor;
+  display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;
+  flex-shrink:0;
+}
+.wz-arrow{color:var(--border);font-size:16px}
+
+/* ===== SKIP ALERT ===== */
+.skip-reason-modal .modal-card{max-width:400px}
+.reason-opts{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
+.reason-opt{
+  padding:10px 14px;border:1.5px solid var(--border);border-radius:8px;
+  cursor:pointer;font-size:13px;transition:all .15s;
+}
+.reason-opt:hover,.reason-opt.selected{border-color:var(--orange);background:var(--orange-l);color:#e65100}
+.coverage-alert{
+  background:var(--red-l);border:1.5px solid var(--red);border-radius:var(--radius-sm);
+  padding:10px 14px;font-size:12px;color:var(--red);margin-top:8px;display:none;
+}
+
 /* PRINT */
 @media print{
   .sidebar,.topbar,.bottom-nav,.hdr-actions,.btn,.tbl-toolbar{display:none!important}
@@ -684,8 +837,8 @@ tbody td{padding:10px 14px;font-size:13px;vertical-align:middle}
     <div class="login-card">
       <div class="login-brand">
         <div class="login-logo-ring">🏛️</div>
-        <h1>Hosur Municipality</h1>
-        <p>Property Tax Command Centre</p>
+        <h1 id="login-muni-name">Urban Tax</h1>
+        <p id="login-muni-sub">Property Tax Management Platform</p>
       </div>
       <div class="role-grid" id="role-grid">
         <div class="role-btn active" data-role="Commissioner" onclick="pickRole(this)">
@@ -701,12 +854,22 @@ tbody td{padding:10px 14px;font-size:13px;vertical-align:middle}
         <div class="role-btn" data-role="Field Collector" onclick="pickRole(this)">
           <span class="role-icon">🏃</span>
           <span class="role-name">Field Collector</span>
-          <span class="role-desc">Route planning</span>
+          <span class="role-desc">Field collection · GPS</span>
+        </div>
+        <div class="role-btn" data-role="Supervisor" onclick="pickRole(this)">
+          <span class="role-icon">👁️</span>
+          <span class="role-name">Supervisor</span>
+          <span class="role-desc">Track collectors · Live</span>
         </div>
         <div class="role-btn" data-role="Analyst" onclick="pickRole(this)">
           <span class="role-icon">📊</span>
           <span class="role-name">Analyst</span>
           <span class="role-desc">Reports · Read only</span>
+        </div>
+        <div class="role-btn" data-role="Admin" onclick="pickRole(this)">
+          <span class="role-icon">⚙️</span>
+          <span class="role-name">Admin/Setup</span>
+          <span class="role-desc">Config · Data import</span>
         </div>
       </div>
       <div class="login-field">
@@ -733,8 +896,8 @@ tbody td{padding:10px 14px;font-size:13px;vertical-align:middle}
     <div class="brand">
       <div class="brand-icon">🏛️</div>
       <div>
-        <div class="brand-text">Hosur Tax</div>
-        <div class="brand-sub">Command Centre</div>
+        <div class="brand-text" id="topbar-brand-name">Urban Tax</div>
+        <div class="brand-sub" id="topbar-brand-sub">Command Centre</div>
       </div>
     </div>
     <div class="topbar-search">
@@ -848,6 +1011,40 @@ tbody td{padding:10px 14px;font-size:13px;vertical-align:middle}
           <polyline points="23,6 13.5,15.5 8.5,10.5 1,18"/><polyline points="17,6 23,6 23,12"/>
         </svg>
         Recovery Tools
+      </div>
+    </div>
+    <div class="nav-divider"></div>
+    <div class="nav-section">
+      <div class="nav-section-label">Field Operations</div>
+      <div class="nav-item" id="nav-fieldcollection" onclick="goPage('fieldcollection')">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" width="20" height="20">
+          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
+        </svg>
+        Field Collection
+        <span class="nav-badge" style="background:var(--green)">Live</span>
+      </div>
+      <div class="nav-item" id="nav-fieldtracker" onclick="goPage('fieldtracker')">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" width="20" height="20">
+          <path d="M1 6v16l7-4 8 4 7-4V2l-7 4-8-4-7 4z"/><path d="M8 2v16M16 6v16"/>
+        </svg>
+        Supervisor Tracker
+      </div>
+    </div>
+    <div class="nav-divider"></div>
+    <div class="nav-section">
+      <div class="nav-section-label">Setup</div>
+      <div class="nav-item" id="nav-dataimport" onclick="goPage('dataimport')">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" width="20" height="20">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="17,8 12,3 7,8"/><line x1="12" y1="3" x2="12" y2="15"/>
+        </svg>
+        Import Data
+      </div>
+      <div class="nav-item" id="nav-municonfig" onclick="goPage('municonfig')">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" width="20" height="20">
+          <circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/>
+        </svg>
+        Municipality Config
       </div>
     </div>
   </nav>
@@ -1165,7 +1362,7 @@ tbody td{padding:10px 14px;font-size:13px;vertical-align:middle}
         <div class="map-bg"></div>
         <div class="map-grid-lines"></div>
         <div id="mapDots"></div>
-        <div class="map-label">📍 Hosur Municipality — 45 Wards Schematic</div>
+        <div class="map-label" id="map-muni-label">📍 Municipality — Ward Schematic Map</div>
         <div class="map-legend">
           <div style="font-weight:600;font-size:11px;margin-bottom:6px">Outstanding Balance</div>
           <div class="leg-row"><div class="leg-dot" style="background:var(--red)"></div>Critical &gt;₹5Cr</div>
@@ -1322,7 +1519,7 @@ tbody td{padding:10px 14px;font-size:13px;vertical-align:middle}
         </div>
         <div class="card">
           <div class="card-body" style="padding-bottom:0">
-            <div class="card-title">🗺️ Hosur Implementation Roadmap</div>
+            <div class="card-title">🗺️ Implementation Roadmap</div>
             <div class="card-sub">Current status + planned next steps</div>
             <div id="roadmap"></div>
           </div>
@@ -1464,6 +1661,414 @@ tbody td{padding:10px 14px;font-size:13px;vertical-align:middle}
       </div>
     </div>
 
+    <!-- ===== FIELD COLLECTION PAGE (QField-inspired) ===== -->
+    <div class="page" id="page-fieldcollection">
+      <div class="page-hdr">
+        <div>
+          <div class="page-title">📍 Field Collection</div>
+          <div class="page-sub">QField-style mobile collection · GPS tracking · Photo evidence</div>
+        </div>
+        <div class="hdr-actions">
+          <button class="btn btn-sm" onclick="startGPS()" id="gps-btn">📡 Start GPS</button>
+          <button class="btn btn-primary btn-sm" onclick="syncFieldData()">☁️ Sync Now</button>
+        </div>
+      </div>
+      <!-- GPS Status Banner -->
+      <div class="field-mode-banner" id="field-banner">
+        <div class="gps-pulse"></div>
+        <div style="flex:1">
+          <strong id="field-collector-name">Field Collector Mode</strong>
+          <span style="opacity:.8;margin-left:8px;font-size:12px" id="field-gps-coords">GPS: Acquiring...</span>
+        </div>
+        <span id="field-collection-count" style="font-size:12px;font-weight:700;background:rgba(255,255,255,.2);padding:4px 10px;border-radius:12px">0 collected today</span>
+      </div>
+      <!-- Assignment & Filter Row -->
+      <div class="card" style="margin-bottom:12px">
+        <div class="card-body" style="padding:12px 16px">
+          <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+            <select class="tbl-select" id="fc-zone-filter" onchange="renderFieldProperties()" style="flex:1;min-width:130px">
+              <option value="">My Assigned Zone</option>
+              <option>Zone A · Wards 01-05</option>
+              <option>Zone B · Wards 10-25</option>
+              <option>Zone C · Wards 30-45</option>
+            </select>
+            <select class="tbl-select" id="fc-ward-filter" onchange="renderFieldProperties()" style="flex:1;min-width:120px">
+              <option value="">All Wards</option>
+            </select>
+            <select class="tbl-select" id="fc-status-filter" onchange="renderFieldProperties()" style="min-width:120px">
+              <option value="">All Status</option>
+              <option value="pending">🔴 Pending</option>
+              <option value="collected">✅ Collected</option>
+              <option value="skipped">⚠️ Skipped</option>
+            </select>
+            <button class="btn btn-sm" onclick="sortByProximity()" style="white-space:nowrap">📍 Sort by Proximity</button>
+          </div>
+        </div>
+      </div>
+      <!-- Coverage Progress Bar -->
+      <div class="property-sequence-bar" id="coverage-bar">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <strong style="font-size:13px">📋 Today's Route Coverage</strong>
+          <span id="coverage-pct" style="font-size:12px;color:var(--green);font-weight:600">0%</span>
+        </div>
+        <div style="margin:8px 0 4px;background:var(--light);border-radius:3px;height:8px;overflow:hidden">
+          <div id="coverage-fill" style="height:100%;background:var(--green);border-radius:3px;width:0%;transition:width .5s"></div>
+        </div>
+        <div style="font-size:11px;color:var(--grey);margin-bottom:6px" id="coverage-stats">0 collected · 0 skipped · 0 pending</div>
+        <div class="psb-track" id="psb-track"></div>
+        <div class="coverage-alert" id="coverage-alert">
+          ⚠️ <strong>Coverage Alert:</strong> You have skipped multiple properties. Supervisor has been notified. Please provide reason codes for all skips.
+        </div>
+      </div>
+      <!-- Anti-Skip Warning -->
+      <div id="antiskip-warning" style="display:none;background:var(--red-l);border:1px solid var(--red);border-radius:var(--radius-sm);padding:10px 14px;margin-bottom:12px;font-size:12px;color:var(--red)">
+        🚫 <strong>Sequential Visit Required:</strong> Complete or record a reason for property #<span id="skip-prop-num">?</span> before proceeding.
+      </div>
+      <!-- Live Collection Map -->
+      <div class="card" style="margin-bottom:12px">
+        <div class="card-body" style="padding:12px">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+            <div class="card-title" style="margin-bottom:0">🗺️ Live Collection Map</div>
+            <div style="display:flex;gap:6px">
+              <div style="display:flex;align-items:center;gap:4px;font-size:10px"><div style="width:10px;height:10px;border-radius:50%;background:var(--green)"></div>Collected</div>
+              <div style="display:flex;align-items:center;gap:4px;font-size:10px"><div style="width:10px;height:10px;border-radius:50%;background:var(--orange)"></div>Skipped</div>
+              <div style="display:flex;align-items:center;gap:4px;font-size:10px"><div style="width:10px;height:10px;border-radius:50%;background:var(--red)"></div>Pending</div>
+            </div>
+          </div>
+          <div class="tracker-map-box" id="field-map-box" style="height:240px;border-radius:var(--radius-sm);border:none">
+            <div class="map-bg"></div>
+            <div class="map-grid-lines"></div>
+            <div id="field-map-pins"></div>
+            <div class="map-label" style="font-size:10px" id="field-map-label">Field Map — tap pins to see property details</div>
+            <div class="map-tooltip" id="fieldMapTip"></div>
+          </div>
+        </div>
+      </div>
+      <!-- Property Cards -->
+      <div id="field-properties-list"></div>
+      <!-- Skip Reason Modal -->
+      <div class="modal-overlay skip-reason-modal" id="skip-modal" onclick="if(event.target===this)closeSkipModal()">
+        <div class="modal-card" style="max-width:400px;border-radius:16px">
+          <div class="modal-hdr">
+            <div class="modal-title">⚠️ Record Skip Reason</div>
+            <div class="modal-close" onclick="closeSkipModal()">×</div>
+          </div>
+          <p style="font-size:13px;color:var(--grey);margin-bottom:14px">A skip reason is <strong>mandatory</strong> — this is logged and visible to supervisors.</p>
+          <div class="reason-opts" id="skip-reasons">
+            <div class="reason-opt" onclick="selectSkipReason(this,'Owner Absent — Door locked')">🚪 Owner Absent — Door locked</div>
+            <div class="reason-opt" onclick="selectSkipReason(this,'Property Inaccessible — Under construction')">🏗️ Property Inaccessible — Under construction</div>
+            <div class="reason-opt" onclick="selectSkipReason(this,'Owner Refused — Dispute raised')">❌ Owner Refused — Dispute raised</div>
+            <div class="reason-opt" onclick="selectSkipReason(this,'Property Demolished / Vacated')">🏚️ Property Demolished / Vacated</div>
+            <div class="reason-opt" onclick="selectSkipReason(this,'Address Not Found')">❓ Address Not Found</div>
+          </div>
+          <div id="skip-confirm-btn" style="display:none">
+            <button class="btn btn-primary" style="width:100%;margin-top:8px" onclick="confirmSkip()">✅ Log Skip & Continue</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== FIELD TRACKER PAGE (SUPERVISOR) ===== -->
+    <div class="page" id="page-fieldtracker">
+      <div class="page-hdr">
+        <div>
+          <div class="page-title">👁️ Supervisor Tracker</div>
+          <div class="page-sub">Live field collector monitoring · Collection events · Coverage alerts</div>
+        </div>
+        <div class="hdr-actions">
+          <button class="btn btn-sm" onclick="refreshTracker()">↻ Refresh</button>
+          <button class="btn btn-danger btn-sm" onclick="toast('📢 Alert sent to all field collectors')">📢 Broadcast Alert</button>
+        </div>
+      </div>
+      <!-- Live Collector Positions Map -->
+      <div class="card" style="margin-bottom:16px">
+        <div class="card-body" style="padding:12px">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+            <div class="card-title" style="margin-bottom:0">🗺️ Live Collector Positions</div>
+            <span class="badge b-green" id="tracker-live-badge">● 3 Active</span>
+          </div>
+          <div class="tracker-map-box" id="tracker-map">
+            <div class="map-bg"></div>
+            <div class="map-grid-lines"></div>
+            <div id="tracker-collector-pins"></div>
+            <div id="tracker-collection-dots"></div>
+            <div class="map-label">Live Field Map — Updates every 30 seconds</div>
+            <div class="map-tooltip" id="trackerTip"></div>
+          </div>
+        </div>
+      </div>
+      <!-- Collector Summary Cards -->
+      <div class="grid-3" id="tracker-collector-cards" style="margin-bottom:16px"></div>
+      <!-- Live Event Feed -->
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-body">
+            <div class="card-title">📡 Live Collection Feed</div>
+            <div class="card-sub">Real-time events from all field collectors</div>
+            <div id="live-event-feed" style="max-height:320px;overflow-y:auto"></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-body">
+            <div class="card-title">⚠️ Coverage Alerts</div>
+            <div class="card-sub">Properties at risk of being missed</div>
+            <div id="coverage-alerts-panel"></div>
+          </div>
+        </div>
+      </div>
+      <!-- Daily Progress Table -->
+      <div class="card">
+        <div class="card-body">
+          <div class="card-title">📊 Today's Progress Summary</div>
+          <div class="tbl-wrap">
+            <table style="min-width:auto">
+              <thead><tr>
+                <th>Collector</th><th>Zone</th><th>Visited</th><th>Collected</th><th>Skipped</th>
+                <th>Amount</th><th>Photos</th><th>Coverage</th><th>Status</th>
+              </tr></thead>
+              <tbody id="tracker-progress-tbl"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== DATA IMPORT PAGE ===== -->
+    <div class="page" id="page-dataimport">
+      <div class="page-hdr">
+        <div>
+          <div class="page-title">📤 Import Property Data</div>
+          <div class="page-sub">Upload CSV, Excel, or JSON · Auto-maps columns · Supports any ULB format</div>
+        </div>
+      </div>
+      <!-- Upload Zone -->
+      <div class="card" style="margin-bottom:16px">
+        <div class="card-body">
+          <div class="import-zone" id="import-zone" onclick="document.getElementById('file-import').click()"
+            ondragover="event.preventDefault();this.classList.add('drag')"
+            ondragleave="this.classList.remove('drag')"
+            ondrop="handleFileDrop(event)">
+            <div class="import-zone-icon">📁</div>
+            <h3>Drop your data file here or click to browse</h3>
+            <p>Supports: .CSV · .XLS · .XLSX · .JSON · .ODS<br>
+              Any ULB property tax dataset with assessment numbers</p>
+          </div>
+          <input type="file" id="file-import" accept=".csv,.xls,.xlsx,.json,.ods" style="display:none" onchange="handleFileImport(this)">
+          <div class="import-progress" id="import-progress">
+            <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--grey)">
+              <span id="import-status-text">Processing...</span>
+              <span id="import-pct-text">0%</span>
+            </div>
+            <div class="import-bar"><div class="import-fill" id="import-fill" style="width:0%"></div></div>
+          </div>
+        </div>
+      </div>
+      <!-- Column Mapping -->
+      <div id="col-mapping-section" style="display:none">
+        <div class="card" style="margin-bottom:16px">
+          <div class="card-body">
+            <div class="card-title">🔗 Column Mapping</div>
+            <div class="card-sub">Map your file's column names to Urban Tax fields</div>
+            <div id="col-mapping-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:8px"></div>
+            <div style="margin-top:16px;display:flex;gap:10px">
+              <button class="btn btn-primary" onclick="applyImport()">✅ Apply Import</button>
+              <button class="btn" onclick="cancelImport()">✕ Cancel</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Template Downloads -->
+      <div class="grid-2" style="margin-bottom:16px">
+        <div class="card">
+          <div class="card-body">
+            <div class="card-title">⬇️ Download Templates</div>
+            <div class="card-sub">Use these templates to prepare your data for import</div>
+            <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px">
+              <button class="btn btn-sm" onclick="downloadTemplate('csv')" style="justify-content:flex-start;gap:10px">
+                📄 <span>Standard CSV Template</span><span style="margin-left:auto;font-size:10px;color:var(--grey)">for any municipality</span>
+              </button>
+              <button class="btn btn-sm" onclick="downloadTemplate('excel')" style="justify-content:flex-start;gap:10px">
+                📊 <span>Excel Template (.xlsx)</span><span style="margin-left:auto;font-size:10px;color:var(--grey)">with instructions tab</span>
+              </button>
+              <button class="btn btn-sm" onclick="downloadTemplate('json')" style="justify-content:flex-start;gap:10px">
+                📋 <span>JSON Format Sample</span><span style="margin-left:auto;font-size:10px;color:var(--grey)">API-ready format</span>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-body">
+            <div class="card-title">📋 Required Fields</div>
+            <div class="card-sub">Minimum data for the system to work</div>
+            <div style="font-size:12px;margin-top:8px;display:flex;flex-direction:column;gap:6px">
+              <div style="display:flex;gap:8px;align-items:center"><span class="badge b-red">Required</span> Assessment / Property Number</div>
+              <div style="display:flex;gap:8px;align-items:center"><span class="badge b-red">Required</span> Owner Name</div>
+              <div style="display:flex;gap:8px;align-items:center"><span class="badge b-red">Required</span> Half-year or Annual Tax Amount</div>
+              <div style="display:flex;gap:8px;align-items:center"><span class="badge b-yellow">Optional</span> Ward / Zone</div>
+              <div style="display:flex;gap:8px;align-items:center"><span class="badge b-yellow">Optional</span> Mobile Number</div>
+              <div style="display:flex;gap:8px;align-items:center"><span class="badge b-yellow">Optional</span> Outstanding Balance</div>
+              <div style="display:flex;gap:8px;align-items:center"><span class="badge b-green">Enriched</span> Usage Type (auto-classified if missing)</div>
+              <div style="display:flex;gap:8px;align-items:center"><span class="badge b-green">Enriched</span> Lat/Long (auto-geocoded if missing)</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Import History -->
+      <div class="card">
+        <div class="card-body">
+          <div class="card-title">🕒 Import History</div>
+          <div id="import-history" style="font-size:13px;color:var(--grey);padding:12px 0">No imports yet. Upload your first file above.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== MUNICIPALITY CONFIG PAGE ===== -->
+    <div class="page" id="page-municonfig">
+      <div class="page-hdr">
+        <div>
+          <div class="page-title">⚙️ Municipality Configuration</div>
+          <div class="page-sub">Configure Urban Tax for your Urban Local Body</div>
+        </div>
+        <div class="hdr-actions">
+          <button class="btn btn-primary btn-sm" onclick="saveMuniConfig()">💾 Save Configuration</button>
+        </div>
+      </div>
+      <!-- Setup Wizard Steps -->
+      <div class="setup-wizard-steps">
+        <div class="wz-step done"><div class="wz-num">✓</div><span>Branding</span></div>
+        <div class="wz-arrow">›</div>
+        <div class="wz-step done"><div class="wz-num">✓</div><span>Tax Rules</span></div>
+        <div class="wz-arrow">›</div>
+        <div class="wz-step active"><div class="wz-num">3</div><span>Field Ops</span></div>
+        <div class="wz-arrow">›</div>
+        <div class="wz-step pending"><div class="wz-num">4</div><span>Integrations</span></div>
+        <div class="wz-arrow">›</div>
+        <div class="wz-step pending"><div class="wz-num">5</div><span>Go Live</span></div>
+      </div>
+      <div class="grid-2">
+        <!-- Branding -->
+        <div class="card">
+          <div class="card-body">
+            <div class="card-title">🏛️ Municipality Branding</div>
+            <div class="card-sub">Set your ULB name and logo</div>
+            <div class="calc-field">
+              <label class="calc-label">Municipality / ULB Name</label>
+              <input class="calc-input" id="cfg-muni-name" placeholder="e.g. Hosur Municipality" value="">
+            </div>
+            <div class="calc-field">
+              <label class="calc-label">Short Name (for topbar)</label>
+              <input class="calc-input" id="cfg-short-name" placeholder="e.g. Hosur Tax">
+            </div>
+            <div class="calc-field">
+              <label class="calc-label">State / Region</label>
+              <input class="calc-input" id="cfg-state" placeholder="e.g. Tamil Nadu">
+            </div>
+            <div class="calc-field">
+              <label class="calc-label">Logo Emoji (or upload image)</label>
+              <input class="calc-input" id="cfg-logo" placeholder="🏛️" value="🏛️" style="font-size:22px">
+            </div>
+            <button class="btn btn-primary btn-sm" onclick="applyBranding()">Apply Branding Preview</button>
+          </div>
+        </div>
+        <!-- Tax Rules -->
+        <div class="card">
+          <div class="card-body">
+            <div class="card-title">💰 Tax Calculation Rules</div>
+            <div class="card-sub">Configure tax rates and calculation method</div>
+            <div class="calc-field">
+              <label class="calc-label">Tax Calculation Method</label>
+              <select class="calc-input" id="cfg-tax-method">
+                <option value="arv">Annual Rental Value (ARV)</option>
+                <option value="cv" selected>Capital Value (PMC/Pune)</option>
+                <option value="uav">Unit Area Value (Delhi/Ahmedabad)</option>
+                <option value="flat">Flat Rate</option>
+              </select>
+            </div>
+            <div class="calc-field">
+              <label class="calc-label">Financial Year Start</label>
+              <select class="calc-input" id="cfg-fy-start">
+                <option value="april" selected>April 1</option>
+                <option value="jan">January 1</option>
+              </select>
+            </div>
+            <div class="calc-field">
+              <label class="calc-label">Early Payment Rebate (%)</label>
+              <input class="calc-input" id="cfg-rebate" type="number" placeholder="5" value="5">
+            </div>
+            <div class="calc-field">
+              <label class="calc-label">Default Penalty (% per year)</label>
+              <input class="calc-input" id="cfg-penalty" type="number" placeholder="18" value="18">
+            </div>
+          </div>
+        </div>
+        <!-- Field Operations Config -->
+        <div class="card">
+          <div class="card-body">
+            <div class="card-title">📱 Field Operations</div>
+            <div class="card-sub">Configure field collection rules</div>
+            <div style="display:flex;flex-direction:column;gap:10px;margin-top:4px">
+              <label style="display:flex;justify-content:space-between;align-items:center;font-size:13px;cursor:pointer">
+                <span>📸 Require photo evidence for collection</span>
+                <input type="checkbox" id="cfg-require-photo" checked style="width:18px;height:18px;cursor:pointer">
+              </label>
+              <label style="display:flex;justify-content:space-between;align-items:center;font-size:13px;cursor:pointer">
+                <span>📍 Enforce sequential property visits</span>
+                <input type="checkbox" id="cfg-sequential" checked style="width:18px;height:18px;cursor:pointer">
+              </label>
+              <label style="display:flex;justify-content:space-between;align-items:center;font-size:13px;cursor:pointer">
+                <span>📋 Mandatory skip reason code</span>
+                <input type="checkbox" id="cfg-skip-reason" checked style="width:18px;height:18px;cursor:pointer">
+              </label>
+              <label style="display:flex;justify-content:space-between;align-items:center;font-size:13px;cursor:pointer">
+                <span>🔔 Alert supervisor on 3+ consecutive skips</span>
+                <input type="checkbox" id="cfg-skip-alert" checked style="width:18px;height:18px;cursor:pointer">
+              </label>
+              <label style="display:flex;justify-content:space-between;align-items:center;font-size:13px;cursor:pointer">
+                <span>🗺️ GPS geofencing (within 100m of property)</span>
+                <input type="checkbox" id="cfg-geofence" style="width:18px;height:18px;cursor:pointer">
+              </label>
+              <div class="calc-field" style="margin-bottom:0">
+                <label class="calc-label">Max Skips Before Alert</label>
+                <input class="calc-input" id="cfg-max-skips" type="number" value="3" min="1" max="10">
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Integrations -->
+        <div class="card">
+          <div class="card-body">
+            <div class="card-title">🔗 Integrations</div>
+            <div class="card-sub">Connect external services</div>
+            <div style="display:flex;flex-direction:column;gap:12px;margin-top:4px">
+              <div style="padding:10px;border:1.5px solid var(--border);border-radius:8px">
+                <div style="display:flex;justify-content:space-between;align-items:center">
+                  <div style="font-size:13px;font-weight:500">🔥 Firebase (Real-time sync)</div>
+                  <span class="badge b-green">Connected</span>
+                </div>
+                <div style="font-size:11px;color:var(--grey);margin-top:4px">Sync collections, photos, and events in real-time</div>
+              </div>
+              <div style="padding:10px;border:1.5px solid var(--border);border-radius:8px">
+                <div style="display:flex;justify-content:space-between;align-items:center">
+                  <div style="font-size:13px;font-weight:500">🗺️ QField / QGIS</div>
+                  <span class="badge b-yellow">Setup Required</span>
+                </div>
+                <div style="font-size:11px;color:var(--grey);margin-top:4px">Export layers for field GPS surveying</div>
+                <button class="btn btn-sm" style="margin-top:6px;font-size:11px" onclick="exportQFieldProject()">📦 Export QField Project</button>
+              </div>
+              <div style="padding:10px;border:1.5px solid var(--border);border-radius:8px">
+                <div style="display:flex;justify-content:space-between;align-items:center">
+                  <div style="font-size:13px;font-weight:500">📱 SMS Gateway</div>
+                  <span class="badge b-grey">Not configured</span>
+                </div>
+                <div style="font-size:11px;color:var(--grey);margin-top:4px">Bulk SMS via Textlocal / MSG91 / Twilio</div>
+                <input class="calc-input" placeholder="API Key" style="margin-top:6px;font-size:12px;padding:6px 10px">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </main>
 
   <!-- BOTTOM NAV (mobile) -->
@@ -1506,6 +2111,12 @@ tbody td{padding:10px 14px;font-size:13px;vertical-align:middle}
         <polyline points="23,6 13.5,15.5 8.5,10.5 1,18"/><polyline points="17,6 23,6 23,12"/>
       </svg>
       <span class="bn-lbl">Tools</span>
+    </div>
+    <div class="bn-item" id="bn-fieldcollection" onclick="goPage('fieldcollection')">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" width="22" height="22">
+        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
+      </svg>
+      <span class="bn-lbl">Field</span>
     </div>
   </nav>
 
@@ -1602,6 +2213,14 @@ function launchApp(role){
     ls.style.display='none';
     document.getElementById('app').style.display='block';
     initApp();
+    // Role-based landing page
+    if(role==='Field Collector'){
+      goPage('fieldcollection');
+    } else if(role==='Supervisor'){
+      goPage('fieldtracker');
+    } else if(role==='Admin'){
+      goPage('municonfig');
+    }
   }, 400);
 }
 function logout(){
@@ -1963,6 +2582,9 @@ function initApp(){
   renderRoadmap();
   renderAIInsights();
   renderEnforcementQueue();
+  // Update dashboard subtitle with municipality name
+  const dashSub = document.getElementById('dash-sub');
+  if(dashSub) dashSub.textContent = `${CONFIG.muniName || 'Municipality'} · ${D.wards ? Object.keys(D.wards).length : '45'} Wards · Live Data`;
   // Auto-connect Firebase if env vars are set
   if (window.__ENV__?.FIREBASE_API_KEY) { initFirebase(); }
 }
@@ -2461,7 +3083,7 @@ function renderReports(){
 }
 
 // ===== NAVIGATION =====
-const PAGES=['dashboard','assessments','anomalies','defaulters','wards','map','collectors','reports','ai','bestpractices','recovery'];
+const PAGES=['dashboard','assessments','anomalies','defaulters','wards','map','collectors','reports','ai','bestpractices','recovery','fieldcollection','fieldtracker','dataimport','municonfig'];
 function goPage(id){
   PAGES.forEach(p=>{
     document.getElementById('page-'+p).classList.toggle('active',p===id);
@@ -2473,6 +3095,10 @@ function goPage(id){
   closeSidebar();
   window.scrollTo(0,0);
   if(id==='ai'){setTimeout(()=>initAIPage(),100);}
+  if(id==='fieldcollection'){setTimeout(()=>initFieldCollection(),100);}
+  if(id==='fieldtracker'){setTimeout(()=>initFieldTracker(),100);}
+  if(id==='dataimport'){initDataImportPage();}
+  if(id==='municonfig'){initMuniConfig();}
   // Lazy resize charts
   setTimeout(()=>{Object.values(S.charts).forEach(c=>c&&c.resize&&c.resize())},100);
 }
@@ -2693,7 +3319,7 @@ async function fbSyncAction(type, data) {
       userId: FB.user.uid,
       userEmail: FB.user.email,
       timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-      municipality: 'Hosur'
+      municipality: CONFIG.muniName || 'Urban Tax'
     });
     toast('✅ Synced to Firebase: ' + type);
     return ref.id;
@@ -2953,6 +3579,931 @@ function handleEnforcementAction(step) {
     toast('📋 Generating ' + step + ' list (Firebase: offline)');
   }
 }
+
+// ============================================================
+// ===== FIELD COLLECTION MODULE (QField-inspired) =====
+// ============================================================
+
+// In-memory field collection state
+const FC = {
+  properties: [], // assigned properties for today
+  collectionLog: {}, // {assessmentNo: {status, amount, photos, reason, timestamp, gps}}
+  currentGPS: null,
+  skipPending: null, // property being skipped
+  skipReason: null,
+  consecutive_skips: 0,
+};
+
+// Simulated field properties from top defaulters in loaded data
+function initFieldCollection(){
+  // Build field property list from D.searchRows if not already done
+  if(FC.properties.length === 0){
+    const src = D.searchRows
+      .filter(r => r[7] > 5000)
+      .sort((a,b) => b[7]-a[7])
+      .slice(0,30);
+    FC.properties = src.map((r,i) => ({
+      idx: i,
+      assessment: r[0],
+      name: r[1],
+      ward: r[2],
+      zone: r[3],
+      usage: r[4],
+      tax: r[5],
+      balance: r[7],
+      address: r[9] || `${r[2]}, ${r[3]}`,
+      mobile: r[10] || '',
+      // Simulated GPS coords spread around map
+      lat: 12.7273 + (Math.random()-0.5)*0.05,
+      lng: 77.8316 + (Math.random()-0.5)*0.05,
+    }));
+  }
+  // Populate ward filter
+  const wards = [...new Set(FC.properties.map(p=>p.ward))];
+  const wardSel = document.getElementById('fc-ward-filter');
+  if(wardSel && wardSel.options.length <= 1){
+    wards.slice(0,10).forEach(w=>{
+      const o = document.createElement('option'); o.value=w; o.textContent=w;
+      wardSel.appendChild(o);
+    });
+  }
+  document.getElementById('field-collector-name').textContent = S.user + ' — Field Mode';
+  startGPS();
+  renderFieldProperties();
+  updateFieldMap();
+  updateCoverageBar();
+}
+
+function startGPS(){
+  if(navigator.geolocation){
+    navigator.geolocation.watchPosition(pos => {
+      FC.currentGPS = {lat: pos.coords.latitude, lng: pos.coords.longitude};
+      const coordEl = document.getElementById('field-gps-coords');
+      if(coordEl) coordEl.textContent = `GPS: ${FC.currentGPS.lat.toFixed(5)}, ${FC.currentGPS.lng.toFixed(5)}`;
+    }, err => {
+      const coordEl = document.getElementById('field-gps-coords');
+      if(coordEl) coordEl.textContent = 'GPS: Unavailable (demo mode)';
+      FC.currentGPS = {lat: 12.7273, lng: 77.8316}; // default
+    }, {enableHighAccuracy:true});
+  } else {
+    FC.currentGPS = {lat:12.7273, lng:77.8316};
+  }
+  toast('📡 GPS tracking started');
+}
+
+function renderFieldProperties(){
+  const wardFilter = document.getElementById('fc-ward-filter')?.value || '';
+  const statusFilter = document.getElementById('fc-status-filter')?.value || '';
+  let props = FC.properties;
+  if(wardFilter) props = props.filter(p=>p.ward===wardFilter);
+  if(statusFilter) props = props.filter(p=>{
+    const log = FC.collectionLog[p.assessment];
+    const st = log?.status || 'pending';
+    return st===statusFilter;
+  });
+
+  const el = document.getElementById('field-properties-list');
+  if(!el) return;
+  if(props.length === 0){
+    el.innerHTML = '<div style="text-align:center;padding:32px;color:var(--grey)">No properties match filter</div>';
+    return;
+  }
+  el.innerHTML = props.map((p,i) => {
+    const log = FC.collectionLog[p.assessment];
+    const status = log?.status || 'pending';
+    const statusIcon = status==='collected'?'✅':status==='skipped'?'⚠️':'🔴';
+    const statusLabel = status==='collected'?'Collected':status==='skipped'?'Skipped':'Pending';
+    const photos = log?.photos || [];
+    return `
+    <div class="field-property-card ${status}" id="fpc-${p.assessment}">
+      <div class="fpc-hdr" onclick="toggleFPC('${p.assessment}')">
+        <div class="fpc-status" style="background:${status==='collected'?'var(--green-l)':status==='skipped'?'var(--orange-l)':'var(--red-l)'}">
+          ${statusIcon}
+        </div>
+        <div style="flex:1">
+          <div style="font-size:13px;font-weight:600">${p.name}</div>
+          <div style="font-size:11px;color:var(--grey)">${p.assessment} · ${p.ward} · ${p.usage.substring(0,8)}</div>
+        </div>
+        <div style="text-align:right;flex-shrink:0">
+          <div style="font-size:14px;font-weight:700;color:var(--red)">₹${Math.round(p.balance).toLocaleString('en-IN')}</div>
+          <span class="badge ${status==='collected'?'b-green':status==='skipped'?'b-orange':'b-red'}" style="font-size:10px">${statusLabel}</span>
+        </div>
+        <div style="color:var(--grey);margin-left:8px;font-size:18px">›</div>
+      </div>
+      <div class="fpc-body" id="fpcb-${p.assessment}">
+        <div style="font-size:12px;color:var(--grey);margin-bottom:10px">
+          📍 ${p.address || p.ward} &nbsp;|&nbsp; 📞 ${p.mobile || 'No mobile'} &nbsp;|&nbsp; 
+          💰 Half-yr tax: ₹${Math.round(p.tax).toLocaleString('en-IN')}
+        </div>
+        ${status==='pending'||status==='skipped' ? `
+        <div class="collection-form">
+          <label class="cf-label">Amount Collected (₹)</label>
+          <input class="cf-input" id="cf-amount-${p.assessment}" type="number" placeholder="Enter amount collected" value="${p.tax}">
+          <label class="cf-label">Payment Mode</label>
+          <select class="cf-input" id="cf-mode-${p.assessment}">
+            <option>Cash</option><option>UPI / QR</option><option>Cheque</option>
+            <option>DD</option><option>NEFT/RTGS</option>
+          </select>
+          <label class="cf-label">Receipt Number</label>
+          <input class="cf-input" id="cf-receipt-${p.assessment}" placeholder="Auto-generated or manual receipt no.">
+          <!-- Photo Evidence Section -->
+          <label class="cf-label" style="margin-top:4px">📸 Photo Evidence</label>
+          <div class="photo-grid" id="photo-grid-${p.assessment}">
+            <div class="add-photo-btn" onclick="addPhoto('${p.assessment}')">
+              <span style="font-size:20px">📷</span>
+              <span>Add Photo</span>
+            </div>
+          </div>
+          <div style="font-size:10px;color:var(--orange);margin-top:4px" id="photo-req-${p.assessment}">
+            ${CONFIG.requirePhoto ? '⚠️ Photo evidence is required before collecting' : ''}
+          </div>
+          <button class="collect-btn" onclick="recordCollection('${p.assessment}')">
+            ✅ Record Tax Collection
+          </button>
+          <button class="skip-btn" onclick="initiateSkip('${p.assessment}')">
+            ⚠️ Skip — Record Reason
+          </button>
+        </div>
+        ` : status==='collected' ? `
+        <div style="background:var(--green-l);border-radius:8px;padding:12px;font-size:12px">
+          ✅ <strong>Collected</strong> · ₹${Math.round(log.amount).toLocaleString('en-IN')} · ${log.mode || 'Cash'}<br>
+          🕒 ${new Date(log.timestamp).toLocaleTimeString()}<br>
+          ${log.photos?.length ? `📸 ${log.photos.length} photo(s) attached` : ''}
+          ${log.receipt ? `🧾 Receipt: ${log.receipt}` : ''}
+        </div>
+        ` : `
+        <div style="background:var(--orange-l);border-radius:8px;padding:12px;font-size:12px">
+          ⚠️ <strong>Skipped</strong> · Reason: ${log.reason || 'Not specified'}<br>
+          🕒 ${new Date(log.timestamp).toLocaleTimeString()}
+        </div>
+        `}
+        ${photos.length > 0 ? `
+        <div class="photo-grid" style="margin-top:8px">
+          ${photos.map((ph,pi) => `
+            <div class="photo-thumb" onclick="viewPhoto(${pi},'${p.assessment}')">
+              <img src="${ph}" alt="Evidence ${pi+1}">
+            </div>
+          `).join('')}
+        </div>` : ''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function toggleFPC(assessment){
+  const body = document.getElementById('fpcb-'+assessment);
+  if(!body) return;
+  body.classList.toggle('open');
+}
+
+function addPhoto(assessment){
+  // Create hidden file input for camera
+  const inp = document.createElement('input');
+  inp.type = 'file';
+  inp.accept = 'image/*';
+  inp.capture = 'environment'; // rear camera
+  inp.onchange = (e) => {
+    const file = e.target.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      if(!FC.collectionLog[assessment]) FC.collectionLog[assessment] = {status:'pending',photos:[]};
+      if(!FC.collectionLog[assessment].photos) FC.collectionLog[assessment].photos = [];
+      FC.collectionLog[assessment].photos.push(ev.target.result);
+      // Update photo grid
+      const grid = document.getElementById('photo-grid-'+assessment);
+      if(grid){
+        const thumb = document.createElement('div');
+        thumb.className = 'photo-thumb';
+        thumb.innerHTML = `<img src="${ev.target.result}" alt="Evidence">`;
+        grid.insertBefore(thumb, grid.firstChild);
+      }
+      // Clear photo warning
+      const reqEl = document.getElementById('photo-req-'+assessment);
+      if(reqEl) reqEl.textContent = '✅ Photo captured';
+      toast('📸 Photo added as evidence');
+    };
+    reader.readAsDataURL(file);
+  };
+  inp.click();
+}
+
+function recordCollection(assessment){
+  const amountEl = document.getElementById('cf-amount-'+assessment);
+  const modeEl = document.getElementById('cf-mode-'+assessment);
+  const receiptEl = document.getElementById('cf-receipt-'+assessment);
+  const amount = parseFloat(amountEl?.value || 0);
+  if(amount <= 0){ toast('⚠️ Please enter a valid amount'); return; }
+
+  // Check photo requirement
+  if(CONFIG.requirePhoto){
+    const photos = FC.collectionLog[assessment]?.photos || [];
+    if(photos.length === 0){
+      toast('📸 Photo evidence is required. Please take a photo first.');
+      return;
+    }
+  }
+
+  FC.collectionLog[assessment] = {
+    status: 'collected',
+    amount: amount,
+    mode: modeEl?.value || 'Cash',
+    receipt: receiptEl?.value || ('RCP-'+Date.now()),
+    photos: FC.collectionLog[assessment]?.photos || [],
+    timestamp: new Date().toISOString(),
+    gps: FC.currentGPS,
+    collector: S.user,
+    assessment: assessment,
+  };
+  FC.consecutive_skips = 0;
+
+  toast(`✅ Collection recorded: ₹${amount.toLocaleString('en-IN')}`);
+
+  // Update map pin
+  updateFieldMap();
+  updateCoverageBar();
+  updateCollectionCount();
+  renderFieldProperties();
+
+  // Sync to Firebase if available
+  if(FB.db && FB.user){
+    fbSyncAction('field_collection', FC.collectionLog[assessment]);
+  }
+
+  // Auto-advance to next pending property
+  setTimeout(()=>{
+    const next = FC.properties.find(p => !FC.collectionLog[p.assessment] || FC.collectionLog[p.assessment]?.status==='pending');
+    if(next) scrollToProperty(next.assessment);
+  }, 500);
+}
+
+function initiateSkip(assessment){
+  FC.skipPending = assessment;
+  document.getElementById('skip-modal').classList.add('show');
+}
+
+function selectSkipReason(el, reason){
+  FC.skipReason = reason;
+  document.querySelectorAll('.reason-opt').forEach(r=>r.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('skip-confirm-btn').style.display = 'block';
+}
+
+function confirmSkip(){
+  const assessment = FC.skipPending;
+  if(!assessment || !FC.skipReason) return;
+  FC.collectionLog[assessment] = {
+    status: 'skipped',
+    reason: FC.skipReason,
+    timestamp: new Date().toISOString(),
+    gps: FC.currentGPS,
+    collector: S.user,
+    photos: FC.collectionLog[assessment]?.photos || [],
+  };
+  FC.consecutive_skips++;
+  closeSkipModal();
+
+  // Check for coverage alert
+  const maxSkips = parseInt(document.getElementById('cfg-max-skips')?.value || '3');
+  if(FC.consecutive_skips >= maxSkips){
+    const alertEl = document.getElementById('coverage-alert');
+    if(alertEl) alertEl.style.display = 'block';
+    toast('🔴 ALERT: Supervisor notified of multiple skips');
+  }
+
+  updateFieldMap();
+  updateCoverageBar();
+  renderFieldProperties();
+  if(FB.db && FB.user) fbSyncAction('field_skip', FC.collectionLog[assessment]);
+  toast(`⚠️ Skip recorded: ${FC.skipReason}`);
+}
+
+function closeSkipModal(){
+  document.getElementById('skip-modal').classList.remove('show');
+  FC.skipPending = null;
+  FC.skipReason = null;
+  document.querySelectorAll('.reason-opt').forEach(r=>r.classList.remove('selected'));
+  document.getElementById('skip-confirm-btn').style.display = 'none';
+}
+
+function updateCoverageBar(){
+  const total = FC.properties.length;
+  const collected = Object.values(FC.collectionLog).filter(l=>l.status==='collected').length;
+  const skipped = Object.values(FC.collectionLog).filter(l=>l.status==='skipped').length;
+  const pending = total - collected - skipped;
+  const pct = total>0 ? Math.round(collected/total*100) : 0;
+
+  const fillEl = document.getElementById('coverage-fill');
+  if(fillEl) fillEl.style.width = pct+'%';
+  const pctEl = document.getElementById('coverage-pct');
+  if(pctEl) pctEl.textContent = pct+'%';
+  const statsEl = document.getElementById('coverage-stats');
+  if(statsEl) statsEl.textContent = `${collected} collected · ${skipped} skipped · ${pending} pending`;
+
+  // Property sequence dots
+  const trackEl = document.getElementById('psb-track');
+  if(trackEl){
+    trackEl.innerHTML = FC.properties.map((p,i)=>{
+      const log = FC.collectionLog[p.assessment];
+      const cls = log?.status==='collected'?'collected':log?.status==='skipped'?'skipped':'pending';
+      return `<div class="psb-dot ${cls}" title="${p.name}" onclick="scrollToProperty('${p.assessment}')"></div>`;
+    }).join('');
+  }
+}
+
+function updateCollectionCount(){
+  const n = Object.values(FC.collectionLog).filter(l=>l.status==='collected').length;
+  const el = document.getElementById('field-collection-count');
+  if(el) el.textContent = `${n} collected today`;
+}
+
+function updateFieldMap(){
+  const el = document.getElementById('field-map-pins');
+  if(!el) return;
+  const box = document.getElementById('field-map-box');
+  const cols = 8, rows = Math.ceil(FC.properties.length/cols);
+  el.innerHTML = FC.properties.map((p,i)=>{
+    const log = FC.collectionLog[p.assessment];
+    const status = log?.status || 'pending';
+    const x = (i%cols+0.5)/cols*100;
+    const y = (Math.floor(i/cols)+0.5)/Math.max(rows,1)*100;
+    const photos = log?.photos || [];
+    const photoIndicator = photos.length > 0 ? '<div style="position:absolute;top:-4px;right:-4px;width:10px;height:10px;border-radius:50%;background:var(--blue);border:1.5px solid white"></div>' : '';
+    return `<div class="field-map-pin" style="left:${x}%;top:${y}%"
+      onmouseenter="showFieldMapTip(event,'${p.name}','${status}',${log?.amount||0},'${p.assessment}')"
+      onmouseleave="hideFieldMapTip()"
+      ontouchstart="showFieldMapTip(event,'${p.name}','${status}',${log?.amount||0},'${p.assessment}')"
+      onclick="toggleFPC('${p.assessment}');scrollToProperty('${p.assessment}')"
+      style="position:absolute;transform:translate(-50%,-50%);cursor:pointer">
+      <div class="fmp-circle ${status}" style="position:relative">${photoIndicator}</div>
+    </div>`;
+  }).join('');
+}
+
+function showFieldMapTip(e, name, status, amount, assessment){
+  const tip = document.getElementById('fieldMapTip');
+  const icon = status==='collected'?'✅':status==='skipped'?'⚠️':'🔴';
+  const photos = FC.collectionLog[assessment]?.photos?.length || 0;
+  tip.innerHTML = `<strong>${name}</strong><br>${icon} ${status.charAt(0).toUpperCase()+status.slice(1)}${amount>0?'<br>₹'+amount.toLocaleString('en-IN'):''}${photos>0?'<br>📸 '+photos+' photo(s)':''}`;
+  const box = document.getElementById('field-map-box').getBoundingClientRect();
+  let x=(e.touches?e.touches[0].clientX:e.clientX)-box.left+10;
+  let y=(e.touches?e.touches[0].clientY:e.clientY)-box.top+10;
+  if(x+150>box.width) x-=160;
+  tip.style.left=x+'px'; tip.style.top=y+'px';
+  tip.classList.add('show');
+}
+function hideFieldMapTip(){ document.getElementById('fieldMapTip')?.classList.remove('show'); }
+
+function sortByProximity(){
+  if(!FC.currentGPS){toast('📡 GPS needed');return;}
+  FC.properties.sort((a,b)=>{
+    const da=Math.hypot(a.lat-FC.currentGPS.lat, a.lng-FC.currentGPS.lng);
+    const db=Math.hypot(b.lat-FC.currentGPS.lat, b.lng-FC.currentGPS.lng);
+    return da-db;
+  });
+  renderFieldProperties();
+  toast('📍 Properties sorted by GPS proximity');
+}
+
+function scrollToProperty(assessment){
+  const el = document.getElementById('fpc-'+assessment);
+  if(el){ el.scrollIntoView({behavior:'smooth',block:'start'}); }
+}
+
+function syncFieldData(){
+  const count = Object.keys(FC.collectionLog).length;
+  if(count===0){toast('No data to sync');return;}
+  // In production this pushes to Firebase
+  toast(`☁️ Syncing ${count} collection records to server...`);
+  setTimeout(()=>toast('✅ Sync complete — all records uploaded'),2000);
+}
+
+// ============================================================
+// ===== SUPERVISOR TRACKER MODULE =====
+// ============================================================
+
+const TRACKER = {
+  collectors: [
+    {id:'RK', name:'Ravi Kumar', zone:'Zone A', color:'#1a73e8', target:40,
+     pos:{x:25,y:30}, collected:23, skipped:2, amount:287000, photos:18},
+    {id:'SP', name:'Suresh Pillai', zone:'Zone B', color:'#34a853', target:50,
+     pos:{x:55,y:45}, collected:31, skipped:3, amount:412000, photos:27},
+    {id:'PM', name:'Priya Murthy', zone:'Zone C', color:'#ea4335', target:35,
+     pos:{x:75,y:65}, collected:18, skipped:1, amount:195000, photos:14},
+  ],
+  events: [],
+  interval: null,
+};
+
+function initFieldTracker(){
+  renderTrackerCollectorCards();
+  renderTrackerMap();
+  renderLiveEventFeed();
+  renderCoverageAlerts();
+  renderTrackerProgressTable();
+  // Simulate live events
+  if(!TRACKER.interval){
+    TRACKER.interval = setInterval(()=>{
+      simulateLiveEvent();
+      renderLiveEventFeed();
+      renderTrackerCollectorCards();
+    }, 8000);
+  }
+}
+
+function simulateLiveEvent(){
+  const collectors = TRACKER.collectors;
+  const c = collectors[Math.floor(Math.random()*collectors.length)];
+  const eventTypes = [
+    {type:'collected', icon:'💰', detail:'Tax collected', photo:true},
+    {type:'photo', icon:'📸', detail:'Photo evidence captured', photo:false},
+    {type:'skip', icon:'⚠️', detail:'Property skipped — Owner absent', photo:false},
+    {type:'collected', icon:'💰', detail:'Tax collected via UPI', photo:true},
+  ];
+  const ev = eventTypes[Math.floor(Math.random()*eventTypes.length)];
+  const amounts = [3500, 8200, 15000, 4750, 22000, 6500];
+  const amount = amounts[Math.floor(Math.random()*amounts.length)];
+  if(ev.type==='collected'){
+    c.collected++;
+    c.amount += amount;
+    if(ev.photo) c.photos++;
+  } else if(ev.type==='skip'){
+    c.skipped++;
+  }
+  TRACKER.events.unshift({
+    id: Date.now(),
+    collector: c.name,
+    color: c.color,
+    icon: ev.icon,
+    detail: ev.detail,
+    amount: ev.type==='collected'?amount:0,
+    type: ev.type,
+    time: new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}),
+  });
+  if(TRACKER.events.length > 50) TRACKER.events.pop();
+  // Move collector position slightly
+  c.pos.x = Math.min(90, Math.max(10, c.pos.x + (Math.random()-0.5)*8));
+  c.pos.y = Math.min(90, Math.max(10, c.pos.y + (Math.random()-0.5)*8));
+}
+
+function renderTrackerMap(){
+  const el = document.getElementById('tracker-collector-pins');
+  if(!el) return;
+  el.innerHTML = TRACKER.collectors.map(c=>`
+    <div class="collector-ping" style="left:${c.pos.x}%;top:${c.pos.y}%"
+      onmouseenter="showTrackerTip(event,'${c.name}','${c.zone}',${c.collected},${c.amount})"
+      onmouseleave="hideTrackerTip()">
+      <div class="cp-trail" style="background:${c.color}22"></div>
+      <div class="cp-avatar" style="background:${c.color}">${c.id}</div>
+      <div class="cp-label">${c.name.split(' ')[0]}</div>
+    </div>
+  `).join('');
+
+  // Render collected property dots
+  const dotsEl = document.getElementById('tracker-collection-dots');
+  if(dotsEl){
+    // Scatter some "collected" property dots around
+    const dots = Array.from({length:40},(_,i)=>({
+      x: 5+i*2.3+Math.sin(i)*3,
+      y: 10+Math.cos(i*0.7)*40+Math.random()*20,
+      collected: Math.random()>0.3,
+    }));
+    dotsEl.innerHTML = dots.map(d=>`
+      <div style="position:absolute;left:${d.x}%;top:${d.y}%;
+        width:7px;height:7px;border-radius:50%;
+        background:${d.collected?'var(--green)':'var(--red)'};
+        opacity:.7;transform:translate(-50%,-50%);cursor:pointer"
+        title="${d.collected?'Collected':'Pending'}">
+      </div>
+    `).join('');
+  }
+}
+
+function showTrackerTip(e, name, zone, collected, amount){
+  const tip = document.getElementById('trackerTip');
+  tip.innerHTML = `<strong>${name}</strong><br>${zone}<br>✅ ${collected} collected<br>₹${amount.toLocaleString('en-IN')}`;
+  const box = document.getElementById('tracker-map').getBoundingClientRect();
+  let x=(e.touches?e.touches[0].clientX:e.clientX)-box.left+10;
+  let y=(e.touches?e.touches[0].clientY:e.clientY)-box.top+10;
+  tip.style.left=x+'px'; tip.style.top=y+'px';
+  tip.classList.add('show');
+}
+function hideTrackerTip(){ document.getElementById('trackerTip')?.classList.remove('show'); }
+
+function renderTrackerCollectorCards(){
+  const el = document.getElementById('tracker-collector-cards');
+  if(!el) return;
+  el.innerHTML = TRACKER.collectors.map(c=>{
+    const pct = Math.round(c.collected/c.target*100);
+    return `
+    <div class="col-card">
+      <div class="col-hdr">
+        <div class="col-av" style="background:${c.color}">${c.id}</div>
+        <div>
+          <div class="col-nm">${c.name}</div>
+          <div class="col-zn">${c.zone}</div>
+        </div>
+        <div class="gps-pulse" style="margin-left:auto"></div>
+      </div>
+      <div class="col-stats">
+        <div class="cs"><div class="cs-val" style="color:var(--green)">${c.collected}</div><div class="cs-lbl">Collected</div></div>
+        <div class="cs"><div class="cs-val" style="color:var(--orange)">${c.skipped}</div><div class="cs-lbl">Skipped</div></div>
+        <div class="cs"><div class="cs-val" style="color:var(--blue)">${c.photos}</div><div class="cs-lbl">Photos</div></div>
+      </div>
+      <div class="pbar" style="margin-top:10px">
+        <div class="pfill" style="background:${c.color};width:${Math.min(pct,100)}%"></div>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--grey);margin-top:4px">
+        <span>${pct}% of daily target (${c.target})</span>
+        <span style="color:var(--green);font-weight:600">₹${(c.amount/100000).toFixed(1)}L</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderLiveEventFeed(){
+  const el = document.getElementById('live-event-feed');
+  if(!el) return;
+  if(TRACKER.events.length===0){
+    el.innerHTML = '<div style="padding:16px;color:var(--grey);font-size:12px">Waiting for field events...</div>';
+    return;
+  }
+  el.innerHTML = TRACKER.events.slice(0,20).map(ev=>`
+    <div class="collection-event">
+      <div class="ce-dot ${ev.type}"></div>
+      <div style="flex:1">
+        <div style="font-size:12px;font-weight:500">${ev.icon} ${ev.collector}</div>
+        <div style="font-size:11px;color:var(--grey)">${ev.detail}${ev.amount>0?' · ₹'+ev.amount.toLocaleString('en-IN'):''}</div>
+      </div>
+      <div style="font-size:10px;color:var(--grey)">${ev.time}</div>
+    </div>
+  `).join('');
+}
+
+function renderCoverageAlerts(){
+  const el = document.getElementById('coverage-alerts-panel');
+  if(!el) return;
+  const alerts = [
+    {collector:'Ravi Kumar',issue:'3 consecutive skips in Ward 03',severity:'red'},
+    {collector:'Suresh Pillai',issue:'No activity for 45 minutes',severity:'yellow'},
+    {collector:'Priya Murthy',issue:'Zone C 60% uncovered by 3pm',severity:'orange'},
+  ];
+  el.innerHTML = alerts.map(a=>`
+    <div style="display:flex;gap:10px;padding:10px 0;border-bottom:1px solid #f1f3f4;align-items:flex-start">
+      <div style="width:8px;height:8px;border-radius:50%;background:var(--${a.severity});flex-shrink:0;margin-top:4px"></div>
+      <div>
+        <div style="font-size:13px;font-weight:500">${a.collector}</div>
+        <div style="font-size:11px;color:var(--grey)">${a.issue}</div>
+      </div>
+      <button class="btn btn-sm" style="font-size:10px;margin-left:auto;flex-shrink:0" onclick="toast('📲 Alert sent to '+this.closest('[style]').previousElementSibling.querySelector('div').textContent)">
+        Alert
+      </button>
+    </div>
+  `).join('');
+}
+
+function renderTrackerProgressTable(){
+  const el = document.getElementById('tracker-progress-tbl');
+  if(!el) return;
+  el.innerHTML = TRACKER.collectors.map(c=>{
+    const visited = c.collected + c.skipped;
+    const coverage = c.target>0 ? Math.round(visited/c.target*100) : 0;
+    const statusColor = coverage>=80?'b-green':coverage>=50?'b-yellow':'b-red';
+    return `<tr>
+      <td style="font-weight:600">${c.name}</td>
+      <td style="font-size:12px">${c.zone}</td>
+      <td>${visited}</td>
+      <td style="color:var(--green);font-weight:600">${c.collected}</td>
+      <td style="color:var(--orange)">${c.skipped}</td>
+      <td style="font-weight:600;color:var(--green)">₹${(c.amount/100000).toFixed(1)}L</td>
+      <td><span class="badge b-blue">${c.photos}</span></td>
+      <td><span class="badge ${statusColor}">${coverage}%</span></td>
+      <td><span class="gps-pulse" style="display:inline-block"></span> Active</td>
+    </tr>`;
+  }).join('');
+}
+
+function refreshTracker(){
+  renderTrackerMap();
+  renderTrackerCollectorCards();
+  renderLiveEventFeed();
+  renderTrackerProgressTable();
+  toast('↻ Tracker refreshed');
+}
+
+// ============================================================
+// ===== DATA IMPORT MODULE =====
+// ============================================================
+
+let IMPORT_DATA = { rawRows:[], headers:[], mappings:{} };
+
+function initDataImportPage(){
+  // Nothing to init on first load
+}
+
+function handleFileDrop(e){
+  e.preventDefault();
+  document.getElementById('import-zone').classList.remove('drag');
+  const file = e.dataTransfer.files[0];
+  if(file) processImportFile(file);
+}
+
+function handleFileImport(inp){
+  const file = inp.files[0];
+  if(file) processImportFile(file);
+}
+
+function processImportFile(file){
+  const ext = file.name.split('.').pop().toLowerCase();
+  toast(`📂 Loading ${file.name}...`);
+  document.getElementById('import-progress').style.display = 'block';
+  document.getElementById('import-status-text').textContent = `Reading ${file.name}...`;
+  document.getElementById('import-fill').style.width = '20%';
+  document.getElementById('import-pct-text').textContent = '20%';
+
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    setTimeout(()=>{
+      document.getElementById('import-fill').style.width = '60%';
+      document.getElementById('import-pct-text').textContent = '60%';
+      document.getElementById('import-status-text').textContent = 'Parsing data...';
+
+      let rows = [], headers = [];
+      try {
+        if(ext==='json'){
+          const data = JSON.parse(e.target.result);
+          if(Array.isArray(data) && data.length>0){
+            headers = Object.keys(data[0]);
+            rows = data.map(d=>Object.values(d));
+          }
+        } else if(ext==='csv'){
+          const text = e.target.result;
+          const lines = text.split('\n').filter(l=>l.trim());
+          headers = lines[0].split(',').map(h=>h.trim().replace(/"/g,''));
+          rows = lines.slice(1).map(l=>l.split(',').map(v=>v.trim().replace(/"/g,'')));
+        } else {
+          // XLS/XLSX: try to parse as CSV fallback
+          const text = e.target.result;
+          if(text.includes(',') || text.includes('\t')){
+            const sep = text.includes('\t')?'\t':',';
+            const lines = text.split('\n').filter(l=>l.trim());
+            headers = lines[0].split(sep).map(h=>h.trim());
+            rows = lines.slice(1).map(l=>l.split(sep).map(v=>v.trim()));
+          } else {
+            toast('⚠️ For .xlsx files, please export as CSV first');
+            return;
+          }
+        }
+
+        IMPORT_DATA = {rawRows:rows, headers, mappings:{}};
+        document.getElementById('import-fill').style.width = '100%';
+        document.getElementById('import-pct-text').textContent = '100%';
+        document.getElementById('import-status-text').textContent = `✅ ${rows.length} rows detected`;
+
+        setTimeout(()=>{
+          showColumnMapping(headers, rows.slice(0,3));
+        }, 500);
+      } catch(err){
+        toast('❌ Parse error: ' + err.message);
+        document.getElementById('import-status-text').textContent = 'Error: ' + err.message;
+      }
+    }, 600);
+  };
+
+  if(ext==='json' || ext==='csv'){
+    reader.readAsText(file);
+  } else {
+    reader.readAsText(file); // best effort for xls
+  }
+}
+
+function showColumnMapping(headers, sampleRows){
+  const section = document.getElementById('col-mapping-section');
+  section.style.display = 'block';
+
+  const targetFields = [
+    {key:'assessment', label:'Assessment / Property No.', required:true},
+    {key:'name', label:'Owner Name', required:true},
+    {key:'ward', label:'Ward', required:false},
+    {key:'zone', label:'Zone', required:false},
+    {key:'usage', label:'Usage Type', required:false},
+    {key:'tax', label:'Half-Year Tax Amount', required:true},
+    {key:'balance', label:'Outstanding Balance', required:false},
+    {key:'mobile', label:'Mobile Number', required:false},
+    {key:'address', label:'Address', required:false},
+    {key:'lat', label:'Latitude (GPS)', required:false},
+    {key:'lng', label:'Longitude (GPS)', required:false},
+  ];
+
+  const grid = document.getElementById('col-mapping-grid');
+  grid.innerHTML = targetFields.map(f=>{
+    // Auto-detect best match
+    const autoMatch = autoDetectColumn(headers, f.key);
+    return `
+    <div>
+      <label style="font-size:11px;font-weight:600;color:var(--grey);display:block;margin-bottom:4px;text-transform:uppercase">
+        ${f.label} ${f.required?'<span style="color:var(--red)">*</span>':''}
+      </label>
+      <select class="tbl-select" style="width:100%" id="map-${f.key}" onchange="IMPORT_DATA.mappings['${f.key}']=this.value">
+        <option value="">— Skip —</option>
+        ${headers.map((h,i)=>`<option value="${i}" ${i===autoMatch?'selected':''}>${h}</option>`).join('')}
+      </select>
+    </div>`;
+  }).join('');
+
+  // Set default mappings from auto-detect
+  targetFields.forEach(f=>{
+    const autoMatch = autoDetectColumn(headers, f.key);
+    if(autoMatch >= 0) IMPORT_DATA.mappings[f.key] = String(autoMatch);
+    const sel = document.getElementById('map-'+f.key);
+    if(sel) IMPORT_DATA.mappings[f.key] = sel.value;
+  });
+
+  // Preview
+  const preview = `<div style="margin-top:12px;background:var(--light);border-radius:8px;padding:12px;font-size:11px">
+    <strong>Preview (first 3 rows):</strong>
+    <div style="overflow-x:auto;margin-top:6px">
+      <table style="min-width:auto;font-size:10px">
+        <thead><tr>${headers.map(h=>`<th style="padding:4px 8px;background:white">${h}</th>`).join('')}</tr></thead>
+        <tbody>${sampleRows.map(r=>`<tr>${r.map(v=>`<td style="padding:4px 8px;border-bottom:1px solid #f1f3f4">${v}</td>`).join('')}</tr>`).join('')}</tbody>
+      </table>
+    </div>
+  </div>`;
+  grid.insertAdjacentHTML('afterend', preview);
+}
+
+function autoDetectColumn(headers, fieldKey){
+  const keywords = {
+    assessment: ['assess','prop','number','no','id','property_no'],
+    name: ['name','owner','taxpayer','holder'],
+    ward: ['ward','block'],
+    zone: ['zone'],
+    usage: ['usage','type','category','use'],
+    tax: ['tax','demand','half','amount','current'],
+    balance: ['balance','arrear','outstanding','due','pending'],
+    mobile: ['mobile','phone','contact','number','tel'],
+    address: ['address','location','door','flat','house'],
+    lat: ['lat','latitude'],
+    lng: ['lng','lon','longitude'],
+  };
+  const kws = keywords[fieldKey] || [fieldKey];
+  return headers.findIndex(h => kws.some(k => h.toLowerCase().includes(k)));
+}
+
+function applyImport(){
+  const {rawRows, headers, mappings} = IMPORT_DATA;
+  if(!mappings.assessment || !mappings.name){
+    toast('⚠️ Please map Assessment No. and Owner Name first'); return;
+  }
+  toast(`⏳ Importing ${rawRows.length} records...`);
+  setTimeout(()=>{
+    // In a real app this would add to D.searchRows etc.
+    // For demo, just update the count display
+    const count = rawRows.length;
+    toast(`✅ Import complete: ${count} properties loaded`);
+    // Log to history
+    const hist = document.getElementById('import-history');
+    if(hist){
+      const entry = document.createElement('div');
+      entry.style.cssText = 'padding:8px 0;border-bottom:1px solid #f1f3f4;font-size:12px';
+      entry.innerHTML = `✅ <strong>${count} records</strong> imported · ${new Date().toLocaleString('en-IN',{dateStyle:'short',timeStyle:'short'})} · Source: uploaded file`;
+      hist.insertBefore(entry, hist.firstChild);
+      hist.style.color = '';
+    }
+    document.getElementById('col-mapping-section').style.display = 'none';
+  }, 1200);
+}
+
+function cancelImport(){
+  document.getElementById('col-mapping-section').style.display = 'none';
+  IMPORT_DATA = {rawRows:[], headers:[], mappings:{}};
+}
+
+function downloadTemplate(format){
+  const csvContent = `Assessment No,Owner Name,Ward,Zone,Usage Type,Half Year Tax,Outstanding Balance,Mobile,Address,Latitude,Longitude
+ASSESS001,SAMPLE PROPERTY OWNER,WARD 01,ZONE-A,RESIDENTIAL,2500,15000,9876543210,123 Main Street,12.7273,77.8316
+ASSESS002,ANOTHER OWNER,WARD 02,ZONE-A,COMMERCIAL,8500,42000,9876543211,456 Market Road,12.7300,77.8350`;
+  const blob = new Blob([csvContent], {type:'text/csv'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = `urban_tax_template.${format==='csv'?'csv':format==='json'?'json':'csv'}`;
+  a.click();
+  toast(`⬇ Template downloaded (${format.toUpperCase()})`);
+}
+
+// ============================================================
+// ===== MUNICIPALITY CONFIG MODULE =====
+// ============================================================
+
+const CONFIG = {
+  muniName: '',
+  shortName: 'Urban Tax',
+  logo: '🏛️',
+  requirePhoto: true,
+  sequential: true,
+  skipReason: true,
+  maxSkips: 3,
+};
+
+function initMuniConfig(){
+  // Load saved config if any
+  try{
+    const saved = JSON.parse(localStorage.getItem('urbanTaxConfig')||'{}');
+    Object.assign(CONFIG, saved);
+    if(CONFIG.muniName) document.getElementById('cfg-muni-name').value = CONFIG.muniName;
+    if(CONFIG.shortName) document.getElementById('cfg-short-name').value = CONFIG.shortName;
+    if(CONFIG.logo) document.getElementById('cfg-logo').value = CONFIG.logo;
+  } catch(e){}
+}
+
+function applyBranding(){
+  const name = document.getElementById('cfg-muni-name').value.trim();
+  const short = document.getElementById('cfg-short-name').value.trim() || name || 'Urban Tax';
+  const logo = document.getElementById('cfg-logo').value.trim() || '🏛️';
+  // Update topbar
+  const brandEl = document.getElementById('topbar-brand-name');
+  if(brandEl) brandEl.textContent = short;
+  // Update login
+  const loginName = document.getElementById('login-muni-name');
+  if(loginName) loginName.textContent = name || short;
+  // Update tab title
+  document.title = (name || short) + ' — Urban Tax';
+  toast(`✅ Branding applied: ${name || short}`);
+}
+
+function saveMuniConfig(){
+  CONFIG.muniName = document.getElementById('cfg-muni-name')?.value || '';
+  CONFIG.shortName = document.getElementById('cfg-short-name')?.value || 'Urban Tax';
+  CONFIG.logo = document.getElementById('cfg-logo')?.value || '🏛️';
+  CONFIG.requirePhoto = document.getElementById('cfg-require-photo')?.checked ?? true;
+  CONFIG.sequential = document.getElementById('cfg-sequential')?.checked ?? true;
+  CONFIG.skipReason = document.getElementById('cfg-skip-reason')?.checked ?? true;
+  CONFIG.maxSkips = parseInt(document.getElementById('cfg-max-skips')?.value||'3');
+  try{ localStorage.setItem('urbanTaxConfig', JSON.stringify(CONFIG)); } catch(e){}
+  applyBranding();
+  toast('💾 Configuration saved');
+}
+
+function exportQFieldProject(){
+  // Build a QField project descriptor (JSON that would link to GeoPackage in real use)
+  const project = {
+    name: CONFIG.muniName || 'Urban Tax Field Survey',
+    version: '1.0',
+    description: 'Property tax collection field project',
+    layers: [
+      {
+        id: 'properties',
+        name: 'Tax Properties',
+        type: 'Point',
+        fields: ['assessment_no','owner_name','ward','balance','status','photo_path','collected_amount','skip_reason'],
+        editable: true,
+        snappingEnabled: false,
+        geometryType: 'Point',
+      },
+      {
+        id: 'wards',
+        name: 'Ward Boundaries',
+        type: 'Polygon',
+        fields: ['ward_name','total_properties','outstanding'],
+        editable: false,
+      }
+    ],
+    forms: [
+      {
+        layer: 'properties',
+        title: 'Tax Collection Form',
+        fields: [
+          {name:'status',type:'select',options:['Pending','Collected','Skipped']},
+          {name:'collected_amount',type:'number'},
+          {name:'payment_mode',type:'select',options:['Cash','UPI','Cheque']},
+          {name:'photo_path',type:'photo',required:true},
+          {name:'skip_reason',type:'select',conditional_on:'status=Skipped',
+            options:['Owner Absent','Property Inaccessible','Owner Refused','Demolished']},
+        ]
+      }
+    ],
+    offlineCapable: true,
+    syncOnConnect: true,
+  };
+  const blob = new Blob([JSON.stringify(project, null, 2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href=url; a.download='urban_tax_qfield.json'; a.click();
+  toast('📦 QField project exported — import in QField app');
+}
+
+// Load saved config on app start
+try{
+  const saved = JSON.parse(localStorage.getItem('urbanTaxConfig')||'{}');
+  if(saved.shortName){
+    const brandEl = document.getElementById('topbar-brand-name');
+    if(brandEl) brandEl.textContent = saved.shortName;
+  }
+  if(saved.muniName){
+    const loginEl = document.getElementById('login-muni-name');
+    if(loginEl) loginEl.textContent = saved.muniName;
+  }
+  Object.assign(CONFIG, saved);
+} catch(e){}
 
 </script>
 </body>
