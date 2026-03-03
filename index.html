@@ -11,6 +11,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Roboto:wght@300;400;500;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<!-- MapLibre GL JS 4.7.1 — modern WebGL vector maps -->
+<link href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css" rel="stylesheet" crossorigin=""/>
+<script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js" crossorigin=""></script>
 <style>
 /* ===== CSS VARIABLES ===== */
 :root {
@@ -826,6 +829,71 @@ tbody td{padding:10px 14px;font-size:13px;vertical-align:middle}
 .ab-lbl{font-size:10px;opacity:.8;text-transform:uppercase;letter-spacing:.3px}
 .ab-btn{background:white;color:var(--blue);border:none;padding:9px 18px;border-radius:8px;font-weight:600;font-family:var(--font-display);font-size:13px;cursor:pointer;margin-top:12px;transition:all .15s}
 .ab-btn:hover{background:var(--blue-l)}
+
+/* ===== MAPLIBRE GL OVERRIDES ===== */
+.maplibregl-map{font-family:var(--font)!important}
+.maplibregl-ctrl-group{border-radius:10px!important;box-shadow:var(--shadow-md)!important;border:none!important;overflow:hidden}
+.maplibregl-ctrl-group button{border:none!important}
+.maplibregl-popup-content{border-radius:16px!important;box-shadow:0 8px 32px rgba(0,0,0,.18)!important;padding:0!important;font-family:var(--font)!important;overflow:hidden}
+.maplibregl-popup-close-button{font-size:18px!important;padding:6px 10px!important;color:var(--grey)!important;z-index:2;background:none!important}
+.maplibregl-popup-tip{border-top-color:white!important}
+
+/* ===== MAP CONTAINERS ===== */
+.sat-map-wrap{border-radius:var(--radius);overflow:hidden;border:1px solid var(--border);position:relative}
+.sat-map-h300{height:300px}
+.sat-map-h380{height:390px}
+.sat-map-h440{height:450px}
+
+/* ===== LAYER SWITCHER BAR ===== */
+.layer-bar{display:flex;gap:6px;flex-wrap:wrap;align-items:center;padding:8px 0 10px}
+.layer-btn{padding:5px 11px;border-radius:16px;border:1.5px solid var(--border);font-size:11px;font-weight:500;cursor:pointer;background:var(--white);transition:all .15s;display:flex;align-items:center;gap:4px;white-space:nowrap;font-family:var(--font)}
+.layer-btn:hover{border-color:var(--blue);color:var(--blue)}
+.layer-btn.lbact{background:var(--blue);color:white;border-color:var(--blue)}
+.layer-btn.lbact-green{background:var(--green);color:white;border-color:var(--green)}
+.layer-btn.lbact-orange{background:var(--orange);color:white;border-color:var(--orange)}
+
+/* ===== PIN-AND-FORM BOTTOM SHEET ===== */
+.pin-sheet-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:8000;display:none;align-items:flex-end;justify-content:center;animation:sheetFadeIn .2s}
+.pin-sheet-overlay.show{display:flex}
+.pin-sheet{background:white;border-radius:20px 20px 0 0;width:100%;max-width:560px;max-height:88vh;overflow-y:auto;padding:0 0 32px;box-shadow:0 -8px 40px rgba(0,0,0,.22);animation:sheetSlideUp .25s cubic-bezier(.32,1,.45,1)}
+.pin-sheet-handle{width:44px;height:5px;background:#e0e0e0;border-radius:3px;margin:12px auto 0}
+.pin-sheet-hdr{padding:16px 20px 0;display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
+.pin-sheet-title{font-size:17px;font-weight:700;color:var(--dark)}
+.pin-sheet-close{width:32px;height:32px;border-radius:50%;border:none;background:var(--light);cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--grey)}
+.pin-sheet-coords{font-size:11px;color:var(--grey);font-family:var(--font-mono);margin:4px 20px 14px;padding:8px 12px;background:var(--light);border-radius:8px;display:flex;align-items:center;gap:6px}
+.pin-sheet-body{padding:0 20px}
+.pin-sheet-section{font-size:10px;font-weight:700;color:var(--grey);text-transform:uppercase;letter-spacing:.6px;margin:16px 0 8px}
+.pin-sheet-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:420px){.pin-sheet-grid{grid-template-columns:1fr}}
+.pin-sheet-footer{padding:16px 20px 0;display:flex;gap:10px}
+.pin-sheet-footer .btn{flex:1;padding:13px}
+@keyframes sheetFadeIn{from{background:rgba(0,0,0,0)}to{background:rgba(0,0,0,.5)}}
+@keyframes sheetSlideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+
+/* ===== MEASUREMENT PANEL ===== */
+.meas-panel{border-radius:var(--radius);border:1px solid var(--border);overflow:hidden;margin-top:12px}
+.meas-hdr{padding:12px 16px;background:linear-gradient(135deg,#1a73e8,#0d47a1);color:white;display:flex;align-items:center;justify-content:space-between}
+.meas-hdr-title{font-weight:700;font-size:14px}
+.meas-hdr-sub{font-size:11px;opacity:.85;margin-top:1px}
+.meas-body{padding:16px;background:var(--white)}
+.meas-tool-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.meas-tool-btn{padding:8px 14px;border-radius:8px;border:1.5px solid var(--border);font-size:12px;font-weight:500;cursor:pointer;background:var(--white);display:flex;align-items:center;gap:6px;font-family:var(--font);transition:all .15s}
+.meas-tool-btn:hover{border-color:var(--blue);background:var(--blue-l);color:var(--blue)}
+.meas-tool-btn.active{background:var(--orange-l);border-color:var(--orange);color:#c45000;font-weight:600}
+.meas-result{background:var(--blue-l);border:1.5px solid var(--blue);border-radius:var(--radius-sm);padding:14px 16px;margin-bottom:14px;display:none}
+.meas-result-val{font-size:24px;font-weight:700;color:var(--blue);font-family:var(--font-display)}
+.meas-result-sub{font-size:11px;color:var(--grey);margin-top:3px}
+
+/* ===== SAVED RECORDS LIST ===== */
+.meas-record{background:var(--light);border-radius:var(--radius-sm);padding:10px 14px;margin-bottom:8px;border-left:3px solid var(--blue)}
+.meas-record-top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.meas-record-area{font-size:14px;font-weight:700;color:var(--blue)}
+.meas-record-surveyor{font-size:12px;font-weight:600;color:var(--dark);margin-top:2px}
+.meas-record-meta{font-size:11px;color:var(--grey);margin-top:2px}
+.surv-section-label{font-size:11px;font-weight:700;color:var(--grey);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
+
+/* cursor crosshair when pin mode active */
+.pin-mode-active{cursor:crosshair!important}
 
 </style>
 </head>
@@ -1724,23 +1792,97 @@ tbody td{padding:10px 14px;font-size:13px;vertical-align:middle}
       <div id="antiskip-warning" style="display:none;background:var(--red-l);border:1px solid var(--red);border-radius:var(--radius-sm);padding:10px 14px;margin-bottom:12px;font-size:12px;color:var(--red)">
         🚫 <strong>Sequential Visit Required:</strong> Complete or record a reason for property #<span id="skip-prop-num">?</span> before proceeding.
       </div>
-      <!-- Live Collection Map -->
+      <!-- ===== SATELLITE MAP + MEASUREMENT PANEL ===== -->
       <div class="card" style="margin-bottom:12px">
         <div class="card-body" style="padding:12px">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-            <div class="card-title" style="margin-bottom:0">🗺️ Live Collection Map</div>
+          <!-- Header row -->
+          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:4px">
+            <div class="card-title" style="margin-bottom:0">🛰️ Live Satellite Field Map</div>
             <div style="display:flex;gap:6px">
-              <div style="display:flex;align-items:center;gap:4px;font-size:10px"><div style="width:10px;height:10px;border-radius:50%;background:var(--green)"></div>Collected</div>
-              <div style="display:flex;align-items:center;gap:4px;font-size:10px"><div style="width:10px;height:10px;border-radius:50%;background:var(--orange)"></div>Skipped</div>
-              <div style="display:flex;align-items:center;gap:4px;font-size:10px"><div style="width:10px;height:10px;border-radius:50%;background:var(--red)"></div>Pending</div>
+              <button class="btn btn-sm" onclick="fcMapCenterMe()" style="font-size:11px">📍 My Location</button>
+              <button class="btn btn-sm" onclick="fcMapFitAll()" style="font-size:11px">⊞ Fit All</button>
             </div>
           </div>
-          <div class="tracker-map-box" id="field-map-box" style="height:240px;border-radius:var(--radius-sm);border:none">
-            <div class="map-bg"></div>
-            <div class="map-grid-lines"></div>
-            <div id="field-map-pins"></div>
-            <div class="map-label" style="font-size:10px" id="field-map-label">Field Map — tap pins to see property details</div>
-            <div class="map-tooltip" id="fieldMapTip"></div>
+          <!-- Layer switcher -->
+          <div class="layer-bar" id="fc-layer-bar">
+            <span style="font-size:10px;color:var(--grey);font-weight:700;text-transform:uppercase;letter-spacing:.4px">Style</span>
+            <div class="layer-btn lbact" id="lb-street"  onclick="fcSwitchBase('street',this)">🗺️ Street</div>
+            <div class="layer-btn"       id="lb-bright"  onclick="fcSwitchBase('bright',this)">☀️ Bright</div>
+            <div class="layer-btn"       id="lb-minimal" onclick="fcSwitchBase('minimal',this)">⬜ Minimal</div>
+            <div class="layer-btn"       id="lb-sat"     onclick="fcSwitchBase('satellite',this)">🛰️ Satellite</div>
+            <div class="layer-btn"       id="lb-hybrid"  onclick="fcSwitchBase('hybrid',this)">🌐 Hybrid</div>
+            <span style="font-size:10px;color:var(--grey);font-weight:700;text-transform:uppercase;letter-spacing:.4px;margin-left:4px">Actions</span>
+            <div class="layer-btn lbact-green" id="lb-props" onclick="fcToggleProps(this)">📌 Properties</div>
+            <div class="layer-btn" id="lb-pin-mode" onclick="setPinMode(!FCMAP.pinModeActive)">➕ Drop Pin</div>
+          </div>
+          <!-- The actual Leaflet map -->
+          <div id="fc-sat-map" class="sat-map-wrap sat-map-h380"></div>
+          <!-- Legend -->
+          <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:8px;font-size:10px;align-items:center">
+            <div style="display:flex;align-items:center;gap:3px"><div style="width:11px;height:11px;border-radius:50%;background:#34a853;border:2px solid white;box-shadow:0 1px 4px rgba(0,0,0,.3)"></div>Collected</div>
+            <div style="display:flex;align-items:center;gap:3px"><div style="width:11px;height:11px;border-radius:50%;background:#f29900;border:2px solid white;box-shadow:0 1px 4px rgba(0,0,0,.3)"></div>Skipped</div>
+            <div style="display:flex;align-items:center;gap:3px"><div style="width:11px;height:11px;border-radius:50%;background:#ea4335;border:2px solid white;box-shadow:0 1px 4px rgba(0,0,0,.3)"></div>Pending</div>
+            <div style="display:flex;align-items:center;gap:3px"><div style="width:11px;height:11px;border-radius:2px;background:#1a73e8;opacity:.6"></div>Measured area</div>
+            <div style="display:flex;align-items:center;gap:3px;margin-left:auto;opacity:.6">📸 = photo attached</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== PROPERTY MEASUREMENT PANEL ===== -->
+      <div class="meas-panel" id="meas-panel">
+        <div class="meas-hdr">
+          <div>
+            <div class="meas-hdr-title">📐 Property Measurement & Survey Record</div>
+            <div class="meas-hdr-sub">GPS stamped · Surveyor attributed · GeoJSON export</div>
+          </div>
+          <button onclick="toggleMeasPanel()" style="background:rgba(255,255,255,.2);border:none;color:white;border-radius:6px;padding:5px 12px;font-size:12px;cursor:pointer;font-family:var(--font)" id="meas-toggle-btn">▲ Hide</button>
+        </div>
+        <div class="meas-body" id="meas-body">
+          <div style="margin-bottom:14px">
+            <label class="cf-label">Measured Area *</label>
+            <input class="cf-input" id="sv-area" placeholder="e.g. 240 m² or 2580 sq ft or 0.06 acres">
+          </div>
+          <div class="surv-section-label">Surveyor Details</div>
+          <div class="surv-grid">
+            <div>
+              <label class="cf-label">Surveyor Name *</label>
+              <input class="cf-input" id="sv-name" placeholder="Full name" style="margin-bottom:0">
+            </div>
+            <div>
+              <label class="cf-label">Designation</label>
+              <input class="cf-input" id="sv-desig" placeholder="e.g. Tax Inspector" style="margin-bottom:0">
+            </div>
+            <div>
+              <label class="cf-label">Assessment No.</label>
+              <input class="cf-input" id="sv-assess" placeholder="Link to property" style="margin-bottom:0">
+            </div>
+            <div>
+              <label class="cf-label">Survey Date</label>
+              <input class="cf-input" id="sv-date" type="date" style="margin-bottom:0">
+            </div>
+          </div>
+          <div style="margin-bottom:10px">
+            <label class="cf-label">Field Notes / Observations</label>
+            <input class="cf-input" id="sv-notes" placeholder="e.g. Ground floor commercial, 3 floors residential above">
+          </div>
+          <div style="margin-bottom:12px">
+            <label class="cf-label">📸 Survey Photo</label>
+            <div style="display:flex;gap:8px;align-items:flex-start;flex-wrap:wrap">
+              <div class="add-photo-btn" style="width:64px;height:64px;flex-shrink:0" onclick="addSurveyPhoto()">
+                <span style="font-size:18px">📷</span>
+                <span style="font-size:9px">Capture</span>
+              </div>
+              <div id="sv-photo-row" style="display:flex;gap:6px;flex-wrap:wrap"></div>
+            </div>
+          </div>
+          <button class="collect-btn" onclick="saveMeasurement()" style="background:var(--blue);margin-bottom:0">💾 Save Measurement Record</button>
+
+          <div style="margin-top:16px">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+              <div class="surv-section-label" style="margin-bottom:0">Saved Measurements (<span id="meas-count">0</span>)</div>
+              <button class="btn btn-sm" onclick="exportMeasurementsGeoJSON()" style="font-size:10px">⬇ GeoJSON</button>
+            </div>
+            <div id="meas-records-list"><div style="font-size:12px;color:var(--grey)">No measurements yet.</div></div>
           </div>
         </div>
       </div>
@@ -1780,21 +1922,23 @@ tbody td{padding:10px 14px;font-size:13px;vertical-align:middle}
           <button class="btn btn-danger btn-sm" onclick="toast('📢 Alert sent to all field collectors')">📢 Broadcast Alert</button>
         </div>
       </div>
-      <!-- Live Collector Positions Map -->
+      <!-- Live Collector Positions Map — Satellite -->
       <div class="card" style="margin-bottom:16px">
         <div class="card-body" style="padding:12px">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-            <div class="card-title" style="margin-bottom:0">🗺️ Live Collector Positions</div>
-            <span class="badge b-green" id="tracker-live-badge">● 3 Active</span>
+          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:6px">
+            <div class="card-title" style="margin-bottom:0">🛰️ Live Collector Positions — Satellite</div>
+            <div style="display:flex;gap:6px;align-items:center">
+              <span class="badge b-green" id="tracker-live-badge">● 3 Active</span>
+              <button class="btn btn-sm" onclick="trackerFitAll()" style="font-size:11px">⊞ Fit All</button>
+            </div>
           </div>
-          <div class="tracker-map-box" id="tracker-map">
-            <div class="map-bg"></div>
-            <div class="map-grid-lines"></div>
-            <div id="tracker-collector-pins"></div>
-            <div id="tracker-collection-dots"></div>
-            <div class="map-label">Live Field Map — Updates every 30 seconds</div>
-            <div class="map-tooltip" id="trackerTip"></div>
+          <div class="layer-bar" style="padding-top:0;padding-bottom:8px">
+            <span style="font-size:10px;color:var(--grey);font-weight:700;text-transform:uppercase;letter-spacing:.4px">Base</span>
+            <div class="layer-btn lbact" id="tlb-sat"    onclick="trackerSwitchBase('satellite',this)">🛰️ Satellite</div>
+            <div class="layer-btn"       id="tlb-hybrid" onclick="trackerSwitchBase('hybrid',this)">🗺️ Hybrid</div>
+            <div class="layer-btn"       id="tlb-street" onclick="trackerSwitchBase('street',this)">🏙️ Street</div>
           </div>
+          <div id="tracker-sat-map" class="sat-map-wrap sat-map-h440"></div>
         </div>
       </div>
       <!-- Collector Summary Cards -->
@@ -3095,8 +3239,8 @@ function goPage(id){
   closeSidebar();
   window.scrollTo(0,0);
   if(id==='ai'){setTimeout(()=>initAIPage(),100);}
-  if(id==='fieldcollection'){setTimeout(()=>initFieldCollection(),100);}
-  if(id==='fieldtracker'){setTimeout(()=>initFieldTracker(),100);}
+  if(id==='fieldcollection'){setTimeout(()=>initFieldCollection(),200);}
+  if(id==='fieldtracker'){setTimeout(()=>initFieldTracker(),200);}
   if(id==='dataimport'){initDataImportPage();}
   if(id==='municonfig'){initMuniConfig();}
   // Lazy resize charts
@@ -3596,57 +3740,60 @@ const FC = {
 
 // Simulated field properties from top defaulters in loaded data
 function initFieldCollection(){
-  // Build field property list from D.searchRows if not already done
+  // Build property list if needed
   if(FC.properties.length === 0){
-    const src = D.searchRows
-      .filter(r => r[7] > 5000)
-      .sort((a,b) => b[7]-a[7])
-      .slice(0,30);
-    FC.properties = src.map((r,i) => ({
-      idx: i,
-      assessment: r[0],
-      name: r[1],
-      ward: r[2],
-      zone: r[3],
-      usage: r[4],
-      tax: r[5],
-      balance: r[7],
-      address: r[9] || `${r[2]}, ${r[3]}`,
-      mobile: r[10] || '',
-      // Simulated GPS coords spread around map
-      lat: 12.7273 + (Math.random()-0.5)*0.05,
-      lng: 77.8316 + (Math.random()-0.5)*0.05,
+    const src = D.searchRows.filter(r=>r[7]>5000).sort((a,b)=>b[7]-a[7]).slice(0,30);
+    FC.properties = src.map((r,i)=>({
+      idx:i, assessment:r[0], name:r[1], ward:r[2], zone:r[3],
+      usage:r[4], tax:r[5], balance:r[7],
+      address:r[9]||`${r[2]}, ${r[3]}`, mobile:r[10]||'',
+      // Realistic GPS spread around Hosur municipality
+      lat:12.7273+(Math.random()-0.5)*0.06,
+      lng:77.8316+(Math.random()-0.5)*0.06,
     }));
   }
-  // Populate ward filter
-  const wards = [...new Set(FC.properties.map(p=>p.ward))];
-  const wardSel = document.getElementById('fc-ward-filter');
-  if(wardSel && wardSel.options.length <= 1){
+  const wards=[...new Set(FC.properties.map(p=>p.ward))];
+  const wardSel=document.getElementById('fc-ward-filter');
+  if(wardSel&&wardSel.options.length<=1){
     wards.slice(0,10).forEach(w=>{
-      const o = document.createElement('option'); o.value=w; o.textContent=w;
-      wardSel.appendChild(o);
+      const o=document.createElement('option');o.value=w;o.textContent=w;wardSel.appendChild(o);
     });
   }
-  document.getElementById('field-collector-name').textContent = S.user + ' — Field Mode';
+  document.getElementById('field-collector-name').textContent=S.user+' — Field Mode';
+  // Pre-fill surveyor name
+  const svName=document.getElementById('sv-name');
+  if(svName&&!svName.value) svName.value=S.user;
+  const svDate=document.getElementById('sv-date');
+  if(svDate&&!svDate.value) svDate.value=new Date().toISOString().slice(0,10);
+
   startGPS();
+  initFCMap();          // Boot Leaflet satellite map
   renderFieldProperties();
-  updateFieldMap();
   updateCoverageBar();
 }
 
 function startGPS(){
+  const coordEl=document.getElementById('field-gps-coords');
+  const update=(lat,lng,acc)=>{
+    FC.currentGPS={lat,lng,accuracy:acc};
+    if(coordEl) coordEl.textContent=`GPS: ${lat.toFixed(5)}, ${lng.toFixed(5)} ±${Math.round(acc||10)}m`;
+    // Move the live GPS dot on the Leaflet field map
+    if(FCMAP.youMarker){
+      FCMAP.youMarker.setLatLng([lat,lng]);
+      if(FCMAP.youCircle) FCMAP.youCircle.setLatLng([lat,lng]).setRadius(acc||10);
+    } else if(FCMAP.map){
+      addGPSDotToMap(lat,lng,acc);
+    }
+  };
   if(navigator.geolocation){
-    navigator.geolocation.watchPosition(pos => {
-      FC.currentGPS = {lat: pos.coords.latitude, lng: pos.coords.longitude};
-      const coordEl = document.getElementById('field-gps-coords');
-      if(coordEl) coordEl.textContent = `GPS: ${FC.currentGPS.lat.toFixed(5)}, ${FC.currentGPS.lng.toFixed(5)}`;
-    }, err => {
-      const coordEl = document.getElementById('field-gps-coords');
-      if(coordEl) coordEl.textContent = 'GPS: Unavailable (demo mode)';
-      FC.currentGPS = {lat: 12.7273, lng: 77.8316}; // default
-    }, {enableHighAccuracy:true});
+    navigator.geolocation.watchPosition(
+      p=>update(p.coords.latitude,p.coords.longitude,p.coords.accuracy),
+      ()=>{ if(coordEl) coordEl.textContent='GPS: Demo mode (no device GPS)'; FC.currentGPS={lat:12.7273,lng:77.8316,accuracy:50}; },
+      {enableHighAccuracy:true,timeout:10000}
+    );
   } else {
-    FC.currentGPS = {lat:12.7273, lng:77.8316};
+    FC.currentGPS={lat:12.7273,lng:77.8316,accuracy:50};
+    if(coordEl) coordEl.textContent='GPS: Demo mode';
   }
   toast('📡 GPS tracking started');
 }
@@ -3917,43 +4064,6 @@ function updateCollectionCount(){
   if(el) el.textContent = `${n} collected today`;
 }
 
-function updateFieldMap(){
-  const el = document.getElementById('field-map-pins');
-  if(!el) return;
-  const box = document.getElementById('field-map-box');
-  const cols = 8, rows = Math.ceil(FC.properties.length/cols);
-  el.innerHTML = FC.properties.map((p,i)=>{
-    const log = FC.collectionLog[p.assessment];
-    const status = log?.status || 'pending';
-    const x = (i%cols+0.5)/cols*100;
-    const y = (Math.floor(i/cols)+0.5)/Math.max(rows,1)*100;
-    const photos = log?.photos || [];
-    const photoIndicator = photos.length > 0 ? '<div style="position:absolute;top:-4px;right:-4px;width:10px;height:10px;border-radius:50%;background:var(--blue);border:1.5px solid white"></div>' : '';
-    return `<div class="field-map-pin" style="left:${x}%;top:${y}%"
-      onmouseenter="showFieldMapTip(event,'${p.name}','${status}',${log?.amount||0},'${p.assessment}')"
-      onmouseleave="hideFieldMapTip()"
-      ontouchstart="showFieldMapTip(event,'${p.name}','${status}',${log?.amount||0},'${p.assessment}')"
-      onclick="toggleFPC('${p.assessment}');scrollToProperty('${p.assessment}')"
-      style="position:absolute;transform:translate(-50%,-50%);cursor:pointer">
-      <div class="fmp-circle ${status}" style="position:relative">${photoIndicator}</div>
-    </div>`;
-  }).join('');
-}
-
-function showFieldMapTip(e, name, status, amount, assessment){
-  const tip = document.getElementById('fieldMapTip');
-  const icon = status==='collected'?'✅':status==='skipped'?'⚠️':'🔴';
-  const photos = FC.collectionLog[assessment]?.photos?.length || 0;
-  tip.innerHTML = `<strong>${name}</strong><br>${icon} ${status.charAt(0).toUpperCase()+status.slice(1)}${amount>0?'<br>₹'+amount.toLocaleString('en-IN'):''}${photos>0?'<br>📸 '+photos+' photo(s)':''}`;
-  const box = document.getElementById('field-map-box').getBoundingClientRect();
-  let x=(e.touches?e.touches[0].clientX:e.clientX)-box.left+10;
-  let y=(e.touches?e.touches[0].clientY:e.clientY)-box.top+10;
-  if(x+150>box.width) x-=160;
-  tip.style.left=x+'px'; tip.style.top=y+'px';
-  tip.classList.add('show');
-}
-function hideFieldMapTip(){ document.getElementById('fieldMapTip')?.classList.remove('show'); }
-
 function sortByProximity(){
   if(!FC.currentGPS){toast('📡 GPS needed');return;}
   FC.properties.sort((a,b)=>{
@@ -3997,16 +4107,16 @@ const TRACKER = {
 
 function initFieldTracker(){
   renderTrackerCollectorCards();
-  renderTrackerMap();
+  initTrackerMap();            // Boot Leaflet satellite tracker map
   renderLiveEventFeed();
   renderCoverageAlerts();
   renderTrackerProgressTable();
-  // Simulate live events
   if(!TRACKER.interval){
     TRACKER.interval = setInterval(()=>{
       simulateLiveEvent();
       renderLiveEventFeed();
       renderTrackerCollectorCards();
+      updateTrackerMarkerPositions(); // move dots on the Leaflet map
     }, 8000);
   }
 }
@@ -4023,72 +4133,22 @@ function simulateLiveEvent(){
   const ev = eventTypes[Math.floor(Math.random()*eventTypes.length)];
   const amounts = [3500, 8200, 15000, 4750, 22000, 6500];
   const amount = amounts[Math.floor(Math.random()*amounts.length)];
-  if(ev.type==='collected'){
-    c.collected++;
-    c.amount += amount;
-    if(ev.photo) c.photos++;
-  } else if(ev.type==='skip'){
-    c.skipped++;
-  }
+  if(ev.type==='collected'){ c.collected++; c.amount+=amount; if(ev.photo) c.photos++; }
+  else if(ev.type==='skip'){ c.skipped++; }
   TRACKER.events.unshift({
-    id: Date.now(),
-    collector: c.name,
-    color: c.color,
-    icon: ev.icon,
-    detail: ev.detail,
-    amount: ev.type==='collected'?amount:0,
-    type: ev.type,
-    time: new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}),
+    id:Date.now(), collector:c.name, color:c.color,
+    icon:ev.icon, detail:ev.detail, amount:ev.type==='collected'?amount:0,
+    type:ev.type, time:new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}),
   });
   if(TRACKER.events.length > 50) TRACKER.events.pop();
-  // Move collector position slightly
-  c.pos.x = Math.min(90, Math.max(10, c.pos.x + (Math.random()-0.5)*8));
-  c.pos.y = Math.min(90, Math.max(10, c.pos.y + (Math.random()-0.5)*8));
+  // Also nudge the old pos.x/y (for any fallback code)
+  c.pos.x=Math.min(90,Math.max(10,c.pos.x+(Math.random()-.5)*8));
+  c.pos.y=Math.min(90,Math.max(10,c.pos.y+(Math.random()-.5)*8));
 }
 
-function renderTrackerMap(){
-  const el = document.getElementById('tracker-collector-pins');
-  if(!el) return;
-  el.innerHTML = TRACKER.collectors.map(c=>`
-    <div class="collector-ping" style="left:${c.pos.x}%;top:${c.pos.y}%"
-      onmouseenter="showTrackerTip(event,'${c.name}','${c.zone}',${c.collected},${c.amount})"
-      onmouseleave="hideTrackerTip()">
-      <div class="cp-trail" style="background:${c.color}22"></div>
-      <div class="cp-avatar" style="background:${c.color}">${c.id}</div>
-      <div class="cp-label">${c.name.split(' ')[0]}</div>
-    </div>
-  `).join('');
-
-  // Render collected property dots
-  const dotsEl = document.getElementById('tracker-collection-dots');
-  if(dotsEl){
-    // Scatter some "collected" property dots around
-    const dots = Array.from({length:40},(_,i)=>({
-      x: 5+i*2.3+Math.sin(i)*3,
-      y: 10+Math.cos(i*0.7)*40+Math.random()*20,
-      collected: Math.random()>0.3,
-    }));
-    dotsEl.innerHTML = dots.map(d=>`
-      <div style="position:absolute;left:${d.x}%;top:${d.y}%;
-        width:7px;height:7px;border-radius:50%;
-        background:${d.collected?'var(--green)':'var(--red)'};
-        opacity:.7;transform:translate(-50%,-50%);cursor:pointer"
-        title="${d.collected?'Collected':'Pending'}">
-      </div>
-    `).join('');
-  }
-}
-
-function showTrackerTip(e, name, zone, collected, amount){
-  const tip = document.getElementById('trackerTip');
-  tip.innerHTML = `<strong>${name}</strong><br>${zone}<br>✅ ${collected} collected<br>₹${amount.toLocaleString('en-IN')}`;
-  const box = document.getElementById('tracker-map').getBoundingClientRect();
-  let x=(e.touches?e.touches[0].clientX:e.clientX)-box.left+10;
-  let y=(e.touches?e.touches[0].clientY:e.clientY)-box.top+10;
-  tip.style.left=x+'px'; tip.style.top=y+'px';
-  tip.classList.add('show');
-}
-function hideTrackerTip(){ document.getElementById('trackerTip')?.classList.remove('show'); }
+function renderTrackerMap(){ /* replaced by initTrackerMap / Leaflet */ }
+function showTrackerTip(){}
+function hideTrackerTip(){}
 
 function renderTrackerCollectorCards(){
   const el = document.getElementById('tracker-collector-cards');
@@ -4184,8 +4244,8 @@ function renderTrackerProgressTable(){
 }
 
 function refreshTracker(){
-  renderTrackerMap();
   renderTrackerCollectorCards();
+  updateTrackerMarkerPositions();
   renderLiveEventFeed();
   renderTrackerProgressTable();
   toast('↻ Tracker refreshed');
@@ -4506,5 +4566,805 @@ try{
 } catch(e){}
 
 </script>
+
+<!-- ===== PIN & FORM BOTTOM SHEET ===== -->
+<div class="pin-sheet-overlay" id="pin-sheet-overlay" onclick="if(event.target===this)closePinSheet()">
+  <div class="pin-sheet">
+    <div class="pin-sheet-handle"></div>
+    <div class="pin-sheet-hdr">
+      <div>
+        <div class="pin-sheet-title" id="psh-title">📌 New Property Pin</div>
+      </div>
+      <button class="pin-sheet-close" onclick="closePinSheet()">✕</button>
+    </div>
+    <div class="pin-sheet-coords" id="psh-coords">
+      <span>📍</span><span id="psh-coords-txt">—</span>
+    </div>
+    <div class="pin-sheet-body">
+
+      <!-- Property type quick-select -->
+      <div class="pin-sheet-section">Property Type</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:4px" id="psh-type-btns">
+        <button class="layer-btn lbact" onclick="pshSelectType(this,'Residential')">🏠 Residential</button>
+        <button class="layer-btn" onclick="pshSelectType(this,'Commercial')">🏪 Commercial</button>
+        <button class="layer-btn" onclick="pshSelectType(this,'Industrial')">🏭 Industrial</button>
+        <button class="layer-btn" onclick="pshSelectType(this,'Vacant Land')">🌿 Vacant Land</button>
+        <button class="layer-btn" onclick="pshSelectType(this,'Mixed Use')">🏢 Mixed Use</button>
+      </div>
+
+      <!-- Core details -->
+      <div class="pin-sheet-section">Property Details</div>
+      <div class="pin-sheet-grid">
+        <div>
+          <label class="cf-label">Owner Name *</label>
+          <input class="cf-input" id="psh-owner" placeholder="Full name" style="margin-bottom:0">
+        </div>
+        <div>
+          <label class="cf-label">Assessment No.</label>
+          <input class="cf-input" id="psh-assess" placeholder="e.g. 08/WD-12/R/45" style="margin-bottom:0">
+        </div>
+        <div>
+          <label class="cf-label">Ward</label>
+          <input class="cf-input" id="psh-ward" placeholder="Ward name" style="margin-bottom:0">
+        </div>
+        <div>
+          <label class="cf-label">Zone</label>
+          <input class="cf-input" id="psh-zone" placeholder="Zone A / B…" style="margin-bottom:0">
+        </div>
+        <div>
+          <label class="cf-label">Annual Tax (₹)</label>
+          <input class="cf-input" id="psh-tax" type="number" placeholder="0.00" style="margin-bottom:0">
+        </div>
+        <div>
+          <label class="cf-label">Outstanding Balance (₹)</label>
+          <input class="cf-input" id="psh-balance" type="number" placeholder="0.00" style="margin-bottom:0">
+        </div>
+      </div>
+      <div style="margin-top:10px">
+        <label class="cf-label">Address / Landmark</label>
+        <input class="cf-input" id="psh-address" placeholder="Street, landmark or plot description">
+      </div>
+      <div>
+        <label class="cf-label">Mobile</label>
+        <input class="cf-input" id="psh-mobile" type="tel" placeholder="+91 XXXXX XXXXX" style="margin-bottom:0">
+      </div>
+
+      <!-- Survey details -->
+      <div class="pin-sheet-section" style="margin-top:18px">Surveyor Details</div>
+      <div class="pin-sheet-grid">
+        <div>
+          <label class="cf-label">Surveyor Name</label>
+          <input class="cf-input" id="psh-surveyor" placeholder="Your name" style="margin-bottom:0">
+        </div>
+        <div>
+          <label class="cf-label">Survey Date</label>
+          <input class="cf-input" id="psh-date" type="date" style="margin-bottom:0">
+        </div>
+      </div>
+      <div style="margin-top:10px">
+        <label class="cf-label">Field Notes</label>
+        <input class="cf-input" id="psh-notes" placeholder="Observations, construction type, floors…">
+      </div>
+
+      <!-- Photo -->
+      <div class="pin-sheet-section">📸 Site Photo</div>
+      <div style="display:flex;gap:8px;align-items:flex-start;flex-wrap:wrap">
+        <div class="add-photo-btn" style="width:64px;height:64px;flex-shrink:0" onclick="pshAddPhoto()">
+          <span style="font-size:18px">📷</span><span style="font-size:9px">Capture</span>
+        </div>
+        <div id="psh-photo-row" style="display:flex;gap:6px;flex-wrap:wrap"></div>
+      </div>
+
+    </div><!-- /body -->
+    <div class="pin-sheet-footer">
+      <button class="btn" onclick="closePinSheet()" style="background:var(--light);color:var(--dark);border:1px solid var(--border)">Cancel</button>
+      <button class="btn btn-primary" onclick="submitPinForm()" style="font-size:14px;font-weight:700">📌 Save Pin</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// =================================================================
+// ===== MAPLIBRE GL — FIELD COLLECTION MAP =====
+// =================================================================
+
+const FCMAP = {
+  map: null,
+  baseStyle: 'satellite',
+  propMarkers: {},    // assessmentNo → maplibre marker element
+  propPopups: {},     // assessmentNo → maplibre popup
+  pinMarkers: [],     // custom-pinned markers
+  youMarker: null,
+  pinModeActive: false,
+  _pendingPinLngLat: null,
+};
+
+const MEAS = {
+  saved: [],
+  surveyPhotos: [],
+};
+
+// ---- Tile style sources ----
+// Street/hybrid use OpenFreeMap (free, no API key, real vector tiles + labels)
+// Satellite uses ESRI World Imagery (sharp, up-to-date)
+const OFM_BRIGHT   = 'https://tiles.openfreemap.org/styles/bright';
+const OFM_LIBERTY  = 'https://tiles.openfreemap.org/styles/liberty';
+const OFM_POSITRON = 'https://tiles.openfreemap.org/styles/positron';
+
+// Raster satellite source definition (shared across styles)
+const SAT_SOURCE = {
+  type:'raster',
+  tiles:['https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'],
+  tileSize:256, maxzoom:19,
+  attribution:'© Esri, Maxar, Earthstar Geographics'
+};
+
+const MAP_STYLES = {
+  // ① Street — OpenFreeMap Liberty vector style (streets, labels, POIs, everything)
+  street:    OFM_LIBERTY,
+
+  // ② Bright — cleaner, lighter vector style
+  bright:    OFM_BRIGHT,
+
+  // ③ Minimal — light grey no-noise basemap
+  minimal:   OFM_POSITRON,
+
+  // ④ Satellite — ESRI World Imagery raster (pure satellite, no labels)
+  satellite: {
+    version:8,
+    glyphs:'https://tiles.openfreemap.org/glyphs/{fontstack}/{range}.pbf',
+    sprite:'https://tiles.openfreemap.org/sprites/liberty',
+    sources:{ sat: SAT_SOURCE },
+    layers:[{id:'background',type:'background',paint:{'background-color':'#111'}},
+            {id:'sat',type:'raster',source:'sat',paint:{'raster-saturation':0.1,'raster-contrast':0.1}}]
+  },
+
+  // ⑤ Hybrid — ESRI satellite + OpenFreeMap vector labels on top
+  hybrid: {
+    version:8,
+    glyphs:'https://tiles.openfreemap.org/glyphs/{fontstack}/{range}.pbf',
+    sprite:'https://tiles.openfreemap.org/sprites/liberty',
+    sources:{
+      sat: SAT_SOURCE,
+      // OpenFreeMap vector tiles for labels only
+      ofm: { type:'vector', url:'https://tiles.openfreemap.org/planet' }
+    },
+    layers:[
+      {id:'background',type:'background',paint:{'background-color':'#111'}},
+      {id:'sat',type:'raster',source:'sat'},
+      // Road casings
+      {id:'road-case',type:'line',source:'ofm','source-layer':'transportation',
+       filter:['in',['get','class'],['literal',['motorway','trunk','primary','secondary']]],
+       paint:{'line-color':'rgba(255,255,255,0.25)','line-width':['interpolate',['linear'],['zoom'],10,1,16,4]}},
+      // Road lines
+      {id:'road',type:'line',source:'ofm','source-layer':'transportation',
+       filter:['has','class'],
+       paint:{'line-color':'rgba(255,255,255,0.12)','line-width':['interpolate',['linear'],['zoom'],12,0.5,16,2]}},
+      // Place labels
+      {id:'place-label',type:'symbol',source:'ofm','source-layer':'place',
+       filter:['in',['get','class'],['literal',['city','town','village','suburb']]],
+       layout:{'text-field':['get','name'],'text-font':['Noto Sans Regular'],'text-size':['interpolate',['linear'],['zoom'],8,10,14,14],'text-anchor':'center'},
+       paint:{'text-color':'#fff','text-halo-color':'rgba(0,0,0,0.7)','text-halo-width':2}},
+      // Road labels
+      {id:'road-label',type:'symbol',source:'ofm','source-layer':'transportation_name',
+       layout:{'text-field':['get','name'],'text-font':['Noto Sans Regular'],'text-size':11,'symbol-placement':'line'},
+       paint:{'text-color':'rgba(255,255,255,0.9)','text-halo-color':'rgba(0,0,0,0.6)','text-halo-width':1.5}},
+    ]
+  },
+};
+
+function initFCMap(){
+  if(FCMAP.map) return;
+  const center = [FC.currentGPS?.lng||77.8316, FC.currentGPS?.lat||12.7273];
+
+  FCMAP.map = new maplibregl.Map({
+    container: 'fc-sat-map',
+    style: MAP_STYLES.street,   // OpenFreeMap Liberty vector — modern, rich, free
+    center, zoom: 15,
+    attributionControl: true,
+  });
+
+  // Navigation control (zoom + compass)
+  FCMAP.map.addControl(new maplibregl.NavigationControl({visualizePitch:true}), 'top-right');
+
+  // Geolocate control — one tap → fly to user position
+  const geoCtrl = new maplibregl.GeolocateControl({
+    positionOptions:{enableHighAccuracy:true},
+    trackUserLocation:true,
+    showUserHeading:true,
+    showAccuracyCircle:true,
+  });
+  FCMAP.map.addControl(geoCtrl, 'top-right');
+  geoCtrl.on('geolocate', e => {
+    FC.currentGPS = {lat: e.coords.latitude, lng: e.coords.longitude, accuracy: e.coords.accuracy};
+    const el = document.getElementById('field-gps-coords');
+    if(el) el.textContent = `GPS: ${e.coords.latitude.toFixed(5)}, ${e.coords.longitude.toFixed(5)} ±${Math.round(e.coords.accuracy)}m`;
+  });
+
+  // Scale bar
+  FCMAP.map.addControl(new maplibregl.ScaleControl({unit:'metric'}), 'bottom-left');
+
+  // Map load → add property markers
+  FCMAP.map.on('load', () => {
+    addAllFCMarkers();
+    fitAllFCMarkers();
+  });
+
+  // Click on map → pin mode or property click
+  FCMAP.map.on('click', onMapClick);
+}
+
+// ---- CLICKING THE MAP — improved pin drop ----
+function onMapClick(e){
+  if(!FCMAP.pinModeActive) return;
+  const {lng, lat} = e.lngLat;
+  FCMAP._pendingPinLngLat = {lng, lat};
+
+  // Drop a ghost preview marker at click point
+  showGhostPin(lng, lat);
+
+  openPinSheet(lat, lng);
+  setPinMode(false);
+}
+
+// Ghost pin — shows where the pin will land before form is submitted
+let _ghostMarker = null;
+function showGhostPin(lng, lat){
+  if(_ghostMarker){ _ghostMarker.remove(); _ghostMarker = null; }
+  const el = document.createElement('div');
+  el.style.cssText = 'font-size:32px;line-height:1;filter:drop-shadow(0 3px 8px rgba(0,0,0,.5));animation:pinDrop .35s cubic-bezier(.32,1,.45,1);opacity:.75;pointer-events:none';
+  el.textContent = '📌';
+  _ghostMarker = new maplibregl.Marker({element:el, anchor:'bottom'})
+    .setLngLat([lng, lat])
+    .addTo(FCMAP.map);
+}
+function removeGhostPin(){
+  if(_ghostMarker){ _ghostMarker.remove(); _ghostMarker = null; }
+}
+
+function setPinMode(on){
+  FCMAP.pinModeActive = on;
+  const canvas = FCMAP.map?.getCanvas();
+  if(canvas) canvas.style.cursor = on ? 'crosshair' : '';
+
+  // Show a floating tooltip on the map while pin mode is active
+  const mapEl = document.getElementById('fc-sat-map');
+  let hint = document.getElementById('pin-mode-hint');
+  if(on){
+    if(!hint){
+      hint = document.createElement('div');
+      hint.id = 'pin-mode-hint';
+      hint.style.cssText = 'position:absolute;top:12px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.75);color:white;padding:8px 16px;border-radius:20px;font-size:13px;font-weight:600;pointer-events:none;z-index:10;white-space:nowrap;backdrop-filter:blur(4px)';
+      hint.textContent = '📌 Tap anywhere on the map to drop a pin';
+      mapEl.style.position = 'relative';
+      mapEl.appendChild(hint);
+    }
+  } else {
+    hint?.remove();
+  }
+
+  const btn = document.getElementById('lb-pin-mode');
+  if(btn){
+    btn.classList.toggle('lbact-orange', on);
+    btn.textContent = on ? '✕ Cancel' : '➕ Drop Pin';
+  }
+}
+
+// ---- PROPERTY MARKERS ----
+function makeMarkerEl(status, hasPhoto, hasMeas){
+  const col = {collected:'#34a853', skipped:'#f29900', pending:'#ea4335'}[status] || '#ea4335';
+  const el = document.createElement('div');
+  el.style.cssText = `width:30px;height:30px;border-radius:50%;background:${col};border:3px solid white;box-shadow:0 2px 10px rgba(0,0,0,.35);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:11px;position:relative;transition:transform .15s`;
+  el.innerHTML = hasPhoto ? '📸' : '';
+  if(hasMeas){
+    const badge = document.createElement('div');
+    badge.style.cssText = 'position:absolute;top:-5px;right:-5px;background:#1a73e8;border:2px solid white;border-radius:50%;width:14px;height:14px;font-size:8px;display:flex;align-items:center;justify-content:center;color:white';
+    badge.textContent = '📐';
+    el.appendChild(badge);
+  }
+  el.addEventListener('mouseenter', ()=> el.style.transform='scale(1.2)');
+  el.addEventListener('mouseleave', ()=> el.style.transform='scale(1)');
+  return el;
+}
+
+function buildPopupHTML(p){
+  const log = FC.collectionLog[p.assessment];
+  const status = log?.status || 'pending';
+  const statusLabel = {collected:'✅ Collected', skipped:'⚠️ Skipped', pending:'🔴 Pending'}[status];
+  const meas = MEAS.saved.filter(m => m.assessment === p.assessment);
+  return `<div style="padding:14px 16px;min-width:210px">
+    <div style="font-weight:700;font-size:14px;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid #f0f0f0;color:#1a1a2e">${p.name}</div>
+    <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px"><span style="color:#5f6368">Assessment</span><span style="font-weight:600;font-family:monospace;font-size:11px">${p.assessment}</span></div>
+    <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px"><span style="color:#5f6368">Ward</span><span style="font-weight:600">${p.ward}</span></div>
+    <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px"><span style="color:#5f6368">Balance</span><span style="font-weight:700;color:#ea4335">₹${Math.round(p.balance).toLocaleString('en-IN')}</span></div>
+    <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:10px"><span style="color:#5f6368">Status</span><span>${statusLabel}</span></div>
+    ${meas.length ? `<div style="font-size:11px;color:#1a73e8;margin-bottom:10px">📐 ${meas[0].area}</div>` : ''}
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+      <button onclick="popupAddPhoto('${p.assessment}')" style="padding:7px 0;border-radius:8px;border:none;background:#e8f0fe;color:#1a73e8;font-weight:600;font-size:11px;cursor:pointer;font-family:inherit">📸 Photo</button>
+      <button onclick="popupMeasure('${p.assessment}')" style="padding:7px 0;border-radius:8px;border:none;background:#fff3e0;color:#c45000;font-weight:600;font-size:11px;cursor:pointer;font-family:inherit">📐 Measure</button>
+      ${status!=='collected'?`<button onclick="popupCollect('${p.assessment}')" style="padding:7px 0;border-radius:8px;border:none;background:#34a853;color:white;font-weight:600;font-size:11px;cursor:pointer;font-family:inherit;grid-column:span 2">💰 Collect Tax</button>`:''}
+    </div>
+  </div>`;
+}
+
+function addFCMarker(p){
+  if(!FCMAP.map) return;
+  const log = FC.collectionLog[p.assessment];
+  const status = log?.status || 'pending';
+  const hasPhoto = (log?.photos||[]).length > 0;
+  const hasMeas = MEAS.saved.some(m => m.assessment === p.assessment);
+
+  const el = makeMarkerEl(status, hasPhoto, hasMeas);
+
+  const popup = new maplibregl.Popup({offset:18, closeButton:true, maxWidth:'260px'})
+    .setHTML(buildPopupHTML(p));
+
+  // Expand property card on open
+  popup.on('open', () => {
+    const body = document.getElementById('fpcb-'+p.assessment);
+    if(body && !body.classList.contains('open')) body.classList.add('open');
+    scrollToProperty(p.assessment);
+  });
+
+  const marker = new maplibregl.Marker({element:el, anchor:'center'})
+    .setLngLat([p.lng, p.lat])
+    .setPopup(popup)
+    .addTo(FCMAP.map);
+
+  FCMAP.propMarkers[p.assessment] = marker;
+}
+
+function addAllFCMarkers(){
+  FC.properties.forEach(p => addFCMarker(p));
+}
+
+function refreshFCMarker(assessment){
+  if(!FCMAP.map) return;
+  if(FCMAP.propMarkers[assessment]){
+    FCMAP.propMarkers[assessment].remove();
+    delete FCMAP.propMarkers[assessment];
+  }
+  const p = FC.properties.find(x => x.assessment === assessment);
+  if(p) addFCMarker(p);
+}
+
+function updateFieldMap(){
+  if(!FCMAP.map) return;
+  FC.properties.forEach(p => {
+    if(FC.collectionLog[p.assessment]) refreshFCMarker(p.assessment);
+  });
+}
+
+function fitAllFCMarkers(){
+  if(!FCMAP.map || !FC.properties.length) return;
+  const lngs = FC.properties.map(p => p.lng);
+  const lats = FC.properties.map(p => p.lat);
+  FCMAP.map.fitBounds(
+    [[Math.min(...lngs)-.002, Math.min(...lats)-.002],[Math.max(...lngs)+.002, Math.max(...lats)+.002]],
+    {padding:48, duration:800}
+  );
+}
+
+// ---- LAYER SWITCHING ----
+function fcSwitchBase(name, btn){
+  if(!FCMAP.map) return;
+  const style = MAP_STYLES[name];
+  if(!style) return;
+  FCMAP.map.setStyle(style);
+  FCMAP.baseStyle = name;
+  // Re-add markers after style load (setStyle wipes all sources/layers)
+  FCMAP.map.once('idle', () => {
+    addAllFCMarkers();
+    // Re-add any custom pins
+    if(FCMAP.pinMarkers?.length){
+      const saved = [...FCMAP.pinMarkers];
+      FCMAP.pinMarkers = [];
+      saved.forEach(r => addCustomPin(r));
+    }
+  });
+  document.querySelectorAll('#fc-layer-bar .layer-btn').forEach(b => b.classList.remove('lbact'));
+  if(btn) btn.classList.add('lbact');
+}
+
+function fcMapCenterMe(){
+  if(!FCMAP.map || !FC.currentGPS){ toast('📡 GPS not available yet'); return; }
+  FCMAP.map.flyTo({center:[FC.currentGPS.lng, FC.currentGPS.lat], zoom:18, duration:600});
+}
+
+function fcMapFitAll(){ fitAllFCMarkers(); }
+
+// Popup actions
+function popupAddPhoto(assessment){
+  FCMAP.propMarkers[assessment]?.getPopup().remove();
+  const body = document.getElementById('fpcb-'+assessment);
+  if(body) body.classList.add('open');
+  scrollToProperty(assessment);
+  setTimeout(() => addPhoto(assessment), 300);
+}
+function popupMeasure(assessment){
+  FCMAP.propMarkers[assessment]?.getPopup().remove();
+  document.getElementById('sv-assess').value = assessment;
+  document.getElementById('meas-panel').scrollIntoView({behavior:'smooth'});
+  toast(`📐 Fill in the measurement form below for ${assessment}`);
+}
+function popupCollect(assessment){
+  FCMAP.propMarkers[assessment]?.getPopup().remove();
+  const body = document.getElementById('fpcb-'+assessment);
+  if(body) body.classList.add('open');
+  scrollToProperty(assessment);
+}
+
+// =================================================================
+// ===== PIN-AND-FORM SYSTEM =====
+// =================================================================
+let _pshPhotos = [];
+let _pshType = 'Residential';
+
+function openPinSheet(lat, lng, prefill){
+  _pshPhotos = [];
+  _pshType = 'Residential';
+  document.getElementById('psh-coords-txt').textContent = `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+  document.getElementById('psh-title').textContent = '📌 New Property Pin';
+  // Reset form
+  ['psh-owner','psh-assess','psh-ward','psh-zone','psh-address','psh-mobile','psh-notes'].forEach(id => {
+    const el = document.getElementById(id); if(el) el.value = prefill?.[id.replace('psh-','')] || '';
+  });
+  document.getElementById('psh-tax').value = '';
+  document.getElementById('psh-balance').value = '';
+  document.getElementById('psh-surveyor').value = S.user || '';
+  document.getElementById('psh-date').value = new Date().toISOString().slice(0,10);
+  document.getElementById('psh-photo-row').innerHTML = '';
+  // Reset type buttons
+  document.querySelectorAll('#psh-type-btns .layer-btn').forEach(b => b.classList.remove('lbact'));
+  document.querySelector('#psh-type-btns .layer-btn')?.classList.add('lbact');
+  document.getElementById('pin-sheet-overlay').classList.add('show');
+}
+
+function closePinSheet(){
+  document.getElementById('pin-sheet-overlay').classList.remove('show');
+  FCMAP._pendingPinLngLat = null;
+  removeGhostPin();   // remove the ghost preview marker
+}
+
+function pshSelectType(btn, type){
+  _pshType = type;
+  document.querySelectorAll('#psh-type-btns .layer-btn').forEach(b => b.classList.remove('lbact'));
+  btn.classList.add('lbact');
+}
+
+function pshAddPhoto(){
+  const inp = document.createElement('input');
+  inp.type='file'; inp.accept='image/*'; inp.capture='environment';
+  inp.onchange = e => {
+    const f = e.target.files[0]; if(!f) return;
+    const rd = new FileReader();
+    rd.onload = ev => {
+      _pshPhotos.push(ev.target.result);
+      const row = document.getElementById('psh-photo-row');
+      const d = document.createElement('div');
+      d.className='photo-thumb'; d.style.cssText='width:60px;height:60px';
+      d.innerHTML=`<img src="${ev.target.result}">`;
+      row.appendChild(d);
+    };
+    rd.readAsDataURL(f);
+  };
+  inp.click();
+}
+
+function submitPinForm(){
+  const owner = document.getElementById('psh-owner').value.trim();
+  if(!owner){ toast('⚠️ Owner name is required'); return; }
+
+  const ll = FCMAP._pendingPinLngLat;
+  if(!ll){ toast('⚠️ No pin location — tap map first'); return; }
+
+  const record = {
+    id: 'PIN-'+Date.now(),
+    type: _pshType,
+    owner,
+    assessment: document.getElementById('psh-assess').value.trim() || ('NEW-'+Date.now()),
+    ward: document.getElementById('psh-ward').value.trim(),
+    zone: document.getElementById('psh-zone').value.trim(),
+    address: document.getElementById('psh-address').value.trim(),
+    mobile: document.getElementById('psh-mobile').value.trim(),
+    tax: parseFloat(document.getElementById('psh-tax').value)||0,
+    balance: parseFloat(document.getElementById('psh-balance').value)||0,
+    surveyor: document.getElementById('psh-surveyor').value.trim(),
+    date: document.getElementById('psh-date').value,
+    notes: document.getElementById('psh-notes').value.trim(),
+    lat: ll.lat, lng: ll.lng,
+    photos: [..._pshPhotos],
+    timestamp: new Date().toISOString(),
+  };
+
+  // Add a permanent gold pin to map
+  addCustomPin(record);
+
+  // Add to FC.properties so it shows in field list
+  FC.properties.push({
+    idx: FC.properties.length,
+    assessment: record.assessment,
+    name: record.owner,
+    ward: record.ward || 'New Ward',
+    zone: record.zone || 'Unzoned',
+    usage: record.type,
+    tax: record.tax,
+    balance: record.balance,
+    address: record.address,
+    mobile: record.mobile,
+    lat: ll.lat, lng: ll.lng,
+  });
+  renderFieldProperties();
+  updateCoverageBar();
+
+  // Sync to Firebase
+  if(FB.db && FB.user) fbSyncAction('new_pin', record);
+
+  closePinSheet();
+  toast(`✅ Pin saved — ${record.owner} · ${record.type}`);
+}
+
+function addCustomPin(record){
+  if(!FCMAP.map) return;
+  removeGhostPin();   // replace ghost with real pin
+
+  const typeColor = {Residential:'#1a73e8',Commercial:'#e8710a',Industrial:'#9334e6','Vacant Land':'#188038','Mixed Use':'#c5221f'}[record.type]||'#1a73e8';
+  const typeIcon  = {Residential:'🏠',Commercial:'🏪',Industrial:'🏭','Vacant Land':'🌿','Mixed Use':'🏢'}[record.type]||'📍';
+
+  const el = document.createElement('div');
+  el.style.cssText = `
+    display:flex;flex-direction:column;align-items:center;cursor:pointer;
+    animation:pinDrop .4s cubic-bezier(.32,1,.45,1);
+  `;
+  el.innerHTML = `
+    <div style="background:${typeColor};color:white;border-radius:10px 10px 10px 2px;
+      padding:5px 9px;font-size:11px;font-weight:700;white-space:nowrap;
+      box-shadow:0 3px 12px rgba(0,0,0,.35);max-width:120px;overflow:hidden;text-overflow:ellipsis;
+      display:flex;align-items:center;gap:4px">
+      <span>${typeIcon}</span>
+      <span style="overflow:hidden;text-overflow:ellipsis">${record.owner}</span>
+    </div>
+    <div style="width:2px;height:8px;background:${typeColor};margin:0 auto"></div>
+    <div style="width:8px;height:8px;border-radius:50%;background:${typeColor};box-shadow:0 2px 6px rgba(0,0,0,.4)"></div>
+  `;
+
+  const popup = new maplibregl.Popup({offset:[0,-40], maxWidth:'280px', className:'utax-pin-popup'})
+    .setHTML(`<div style="padding:16px 18px;min-width:220px">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid #f0f0f0">
+        <div style="width:36px;height:36px;border-radius:10px;background:${typeColor}20;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">${typeIcon}</div>
+        <div>
+          <div style="font-weight:700;font-size:14px;color:#1a1a2e">${record.owner}</div>
+          <div style="font-size:11px;color:${typeColor};font-weight:600">${record.type}${record.ward?' · '+record.ward:''}</div>
+        </div>
+      </div>
+      ${record.assessment?`<div style="font-size:11px;font-family:monospace;background:#f8f9fa;padding:4px 8px;border-radius:6px;color:#5f6368;margin-bottom:8px">${record.assessment}</div>`:''}
+      ${record.address?`<div style="font-size:12px;margin-bottom:5px">📍 ${record.address}</div>`:''}
+      ${record.mobile?`<div style="font-size:12px;margin-bottom:5px">📞 ${record.mobile}</div>`:''}
+      ${record.balance?`<div style="font-size:13px;color:#ea4335;font-weight:700;margin-bottom:5px">⚠️ Balance: ₹${record.balance.toLocaleString('en-IN')}</div>`:''}
+      ${record.tax?`<div style="font-size:12px;margin-bottom:8px">💰 Annual Tax: ₹${record.tax.toLocaleString('en-IN')}</div>`:''}
+      ${record.notes?`<div style="font-size:11px;color:#5f6368;background:#f8f9fa;padding:6px 8px;border-radius:6px;margin-bottom:8px">📝 ${record.notes}</div>`:''}
+      ${record.photos.length?`<div style="display:flex;gap:5px;margin-bottom:8px;flex-wrap:wrap">${record.photos.map(ph=>`<img src="${ph}" style="width:52px;height:52px;border-radius:8px;object-fit:cover">`).join('')}</div>`:''}
+      <div style="display:flex;justify-content:space-between;align-items:center;padding-top:8px;border-top:1px solid #f0f0f0">
+        <div style="font-size:10px;color:#bbb;font-family:monospace">📡 ${record.lat.toFixed(5)}, ${record.lng.toFixed(5)}</div>
+        ${record.surveyor?`<div style="font-size:10px;color:#5f6368">👤 ${record.surveyor}</div>`:''}
+      </div>
+    </div>`);
+
+  new maplibregl.Marker({element:el, anchor:'bottom'})
+    .setLngLat([record.lng, record.lat])
+    .setPopup(popup)
+    .addTo(FCMAP.map);
+
+  FCMAP.pinMarkers.push(record);
+  // Fly to pinned location
+  FCMAP.map.flyTo({center:[record.lng, record.lat], zoom: Math.max(FCMAP.map.getZoom(), 17), duration:600});
+}
+
+
+// =================================================================
+// ===== MEASUREMENT HELPERS (no Leaflet.draw — manual form) =====
+// =================================================================
+function toggleMeasPanel(){
+  const body = document.getElementById('meas-body');
+  const btn = document.getElementById('meas-toggle-btn');
+  const hidden = body.style.display==='none';
+  body.style.display = hidden?'block':'none';
+  btn.textContent = hidden?'▲ Hide':'▼ Show';
+}
+
+function saveMeasurement(){
+  const name = document.getElementById('sv-name')?.value?.trim() || S.user;
+  const desig = document.getElementById('sv-desig')?.value?.trim() || '';
+  const assess = document.getElementById('sv-assess')?.value?.trim() || '';
+  const date = document.getElementById('sv-date')?.value || new Date().toISOString().slice(0,10);
+  const notes = document.getElementById('sv-notes')?.value?.trim() || '';
+  const areaInput = document.getElementById('sv-area')?.value?.trim() || '';
+  if(!name){ toast('⚠️ Surveyor name required'); return; }
+  if(!areaInput){ toast('⚠️ Please enter the measured area'); return; }
+
+  const record = {
+    id: 'MSR-'+Date.now(),
+    timestamp: new Date().toISOString(),
+    assessment: assess,
+    surveyor: name,
+    designation: desig,
+    date, notes,
+    area: areaInput,
+    gps: {lat:FC.currentGPS?.lat, lng:FC.currentGPS?.lng},
+    photos: [...MEAS.surveyPhotos],
+  };
+  MEAS.saved.push(record);
+  MEAS.surveyPhotos = [];
+
+  if(assess) refreshFCMarker(assess);
+  renderMeasurements();
+
+  document.getElementById('sv-photo-row').innerHTML = '';
+  document.getElementById('sv-notes').value = '';
+  document.getElementById('sv-area').value = '';
+  document.getElementById('meas-result').style.display = 'none';
+
+  if(FB.db && FB.user) fbSyncAction('measurement', record);
+  toast(`✅ Measurement saved — ${name} · ${areaInput}`);
+}
+
+function addSurveyPhoto(){
+  const inp = document.createElement('input');
+  inp.type='file'; inp.accept='image/*'; inp.capture='environment';
+  inp.onchange = e => {
+    const f=e.target.files[0]; if(!f) return;
+    const rd=new FileReader();
+    rd.onload=ev=>{
+      MEAS.surveyPhotos.push(ev.target.result);
+      const row=document.getElementById('sv-photo-row');
+      if(row){const d=document.createElement('div');d.className='photo-thumb';d.style.cssText='width:60px;height:60px';d.innerHTML=`<img src="${ev.target.result}">`;row.appendChild(d);}
+      toast('📸 Photo added');
+    };
+    rd.readAsDataURL(f);
+  };
+  inp.click();
+}
+
+function renderMeasurements(){
+  const el = document.getElementById('meas-records-list');
+  const cnt = document.getElementById('meas-count');
+  if(cnt) cnt.textContent = MEAS.saved.length;
+  if(!el) return;
+  if(!MEAS.saved.length){ el.innerHTML='<div style="font-size:12px;color:var(--grey)">No measurements yet.</div>'; return; }
+  el.innerHTML = MEAS.saved.slice().reverse().map(m=>`
+    <div class="meas-record">
+      <div class="meas-record-top">
+        <div>
+          <div class="meas-record-area">📐 ${m.area}</div>
+          <div class="meas-record-surveyor">👤 ${m.surveyor}${m.designation?' · '+m.designation:''}</div>
+          <div class="meas-record-meta">${m.assessment?'🏠 '+m.assessment+' · ':''}🗓️ ${m.date}${m.gps?.lat?` · 📍 ${(+m.gps.lat).toFixed(4)}, ${(+m.gps.lng).toFixed(4)}`:''}</div>
+          ${m.notes?`<div style="font-size:11px;color:var(--grey);margin-top:3px">📝 ${m.notes}</div>`:''}
+        </div>
+        <button onclick="deleteMeasurement('${m.id}')" style="background:none;border:none;color:var(--grey);cursor:pointer;font-size:16px;padding:4px">✕</button>
+      </div>
+      ${m.photos.length?`<div style="display:flex;gap:5px;margin-top:8px">${m.photos.map(ph=>`<img src="${ph}" style="width:44px;height:44px;border-radius:6px;object-fit:cover">`).join('')}</div>`:''}
+    </div>`).join('');
+}
+
+function deleteMeasurement(id){
+  MEAS.saved = MEAS.saved.filter(m=>m.id!==id);
+  renderMeasurements();
+  toast('🗑️ Record deleted');
+}
+
+function exportMeasurementsGeoJSON(){
+  if(!MEAS.saved.length && !FCMAP.pinMarkers.length){ toast('No data to export'); return; }
+  const features = [
+    ...MEAS.saved.map(m=>({type:'Feature',geometry:{type:'Point',coordinates:[m.gps?.lng||0,m.gps?.lat||0]},properties:{id:m.id,type:'measurement',surveyor:m.surveyor,area:m.area,assessment:m.assessment,date:m.date,notes:m.notes}})),
+    ...FCMAP.pinMarkers.map(p=>({type:'Feature',geometry:{type:'Point',coordinates:[p.lng,p.lat]},properties:{id:p.id,type:'custom_pin',owner:p.owner,propertyType:p.type,assessment:p.assessment,ward:p.ward,tax:p.tax,balance:p.balance,address:p.address,surveyor:p.surveyor,date:p.date}}))
+  ];
+  const blob=new Blob([JSON.stringify({type:'FeatureCollection',features},null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='urban_tax_pins.geojson';a.click();
+  toast('⬇ Exported as GeoJSON');
+}
+
+// =================================================================
+// ===== SUPERVISOR TRACKER MAP (MapLibre) =====
+// =================================================================
+const TRMAP = {map:null, baseStyle:'satellite', colMarkers:{}, currentBase:'satellite'};
+
+function initTrackerMap(){
+  if(TRMAP.map) return;
+  TRMAP.map = new maplibregl.Map({
+    container: 'tracker-sat-map',
+    style: MAP_STYLES.satellite,
+    center: [77.8316, 12.7273], zoom: 13,
+  });
+  TRMAP.map.addControl(new maplibregl.NavigationControl(), 'top-right');
+  TRMAP.map.addControl(new maplibregl.ScaleControl({unit:'metric'}), 'bottom-left');
+
+  TRMAP.map.on('load', () => {
+    TRACKER.collectors.forEach(c => {
+      c._mapLat = 12.7273 + (Math.random()-.5)*.07;
+      c._mapLng = 77.8316 + (Math.random()-.5)*.07;
+      addTrackerCollectorMarker(c);
+      // Scatter collection dots
+      for(let i=0;i<c.collected;i++){
+        const dotEl=document.createElement('div');
+        dotEl.style.cssText='width:10px;height:10px;border-radius:50%;background:#34a853;border:2px solid white;box-shadow:0 1px 4px rgba(0,0,0,.3)';
+        new maplibregl.Marker({element:dotEl,anchor:'center'})
+          .setLngLat([c._mapLng+(Math.random()-.5)*.03,c._mapLat+(Math.random()-.5)*.03])
+          .addTo(TRMAP.map);
+      }
+    });
+  });
+}
+
+function addTrackerCollectorMarker(c){
+  if(!TRMAP.map) return;
+  const el = document.createElement('div');
+  el.style.cssText=`width:40px;height:40px;border-radius:50%;background:${c.color};border:3px solid white;box-shadow:0 2px 12px rgba(0,0,0,.35);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:white;cursor:pointer`;
+  el.textContent = c.id;
+
+  const popup = new maplibregl.Popup({offset:22, maxWidth:'200px'})
+    .setHTML(`<div style="padding:12px;font-size:12px">
+      <strong style="font-size:14px">${c.name}</strong><br>
+      <span style="color:#5f6368">${c.zone}</span><br><br>
+      ✅ ${c.collected} collected<br>
+      ₹${(c.amount/100000).toFixed(1)}L collected<br>
+      📸 ${c.photos} photos · ⚠️ ${c.skipped} skipped<br>
+      <div style="margin-top:8px;background:#f1f3f4;border-radius:6px;height:8px;overflow:hidden">
+        <div style="width:${c.coverage}%;height:100%;background:${c.color}"></div>
+      </div>
+      <div style="font-size:10px;color:#5f6368;margin-top:3px">${c.coverage}% coverage</div>
+    </div>`);
+
+  const marker = new maplibregl.Marker({element:el, anchor:'center'})
+    .setLngLat([c._mapLng, c._mapLat])
+    .setPopup(popup)
+    .addTo(TRMAP.map);
+  TRMAP.colMarkers[c.id] = marker;
+}
+
+function updateTrackerMarkerPositions(){
+  if(!TRMAP.map) return;
+  TRACKER.collectors.forEach(c => {
+    if(!TRMAP.colMarkers[c.id]) return;
+    c._mapLat += (Math.random()-.5)*.003;
+    c._mapLng += (Math.random()-.5)*.003;
+    TRMAP.colMarkers[c.id].setLngLat([c._mapLng, c._mapLat]);
+    if(Math.random()>.5){
+      const dotEl=document.createElement('div');
+      dotEl.style.cssText='width:9px;height:9px;border-radius:50%;background:#34a853;border:2px solid white;box-shadow:0 1px 3px rgba(0,0,0,.3)';
+      new maplibregl.Marker({element:dotEl,anchor:'center'})
+        .setLngLat([c._mapLng+(Math.random()-.5)*.015,c._mapLat+(Math.random()-.5)*.015])
+        .addTo(TRMAP.map);
+    }
+  });
+}
+
+function trackerSwitchBase(name, btn){
+  if(!TRMAP.map) return;
+  TRMAP.map.setStyle(MAP_STYLES[name]);
+  TRMAP.map.once('idle', () => TRACKER.collectors.forEach(c => addTrackerCollectorMarker(c)));
+  document.querySelectorAll('[id^="tlb-"]').forEach(b => b.classList.remove('lbact'));
+  if(btn) btn.classList.add('lbact');
+}
+
+function trackerFitAll(){
+  if(!TRMAP.map) return;
+  const pts = TRACKER.collectors.filter(c=>c._mapLat).map(c=>[c._mapLng,c._mapLat]);
+  if(pts.length) TRMAP.map.fitBounds([[Math.min(...pts.map(p=>p[0]))-.03,Math.min(...pts.map(p=>p[1]))-.03],[Math.max(...pts.map(p=>p[0]))+.03,Math.max(...pts.map(p=>p[1]))+.03]],{padding:60});
+}
+
+function fcToggleProps(btn){
+  if(!FCMAP.map) return;
+  const visible = btn.classList.toggle('lbact-green');
+  Object.values(FCMAP.propMarkers).forEach(m => {
+    const el = m.getElement();
+    if(el) el.style.display = visible ? '' : 'none';
+  });
+}
+
+</script>
+
+<style>
+@keyframes pinDrop{0%{transform:translateY(-20px) scale(.7);opacity:0}70%{transform:translateY(3px) scale(1.1)}100%{transform:translateY(0) scale(1);opacity:1}}
+</style>
 </body>
 </html>
