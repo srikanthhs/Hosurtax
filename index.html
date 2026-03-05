@@ -4264,6 +4264,8 @@ function initDataImportPage(){
 function handleFileDrop(e){
   e.preventDefault();
   document.getElementById('import-zone').classList.remove('drag');
+  const oldPreview = document.getElementById('col-mapping-preview');
+  if(oldPreview) oldPreview.remove();
   const file = e.dataTransfer.files[0];
   if(file) processImportFile(file);
 }
@@ -4271,6 +4273,7 @@ function handleFileDrop(e){
 function handleFileImport(inp){
   const file = inp.files[0];
   if(file) processImportFile(file);
+  inp.value = ''; // Reset so uploading a new municipality file always triggers onchange
 }
 
 function processImportFile(file){
@@ -4341,6 +4344,10 @@ function showColumnMapping(headers, sampleRows){
   const section = document.getElementById('col-mapping-section');
   section.style.display = 'block';
 
+  // Remove any leftover preview from a previous file so old municipality data isn't shown
+  const oldPreview = document.getElementById('col-mapping-preview');
+  if(oldPreview) oldPreview.remove();
+
   const targetFields = [
     {key:'assessment', label:'Assessment / Property No.', required:true},
     {key:'name', label:'Owner Name', required:true},
@@ -4380,7 +4387,7 @@ function showColumnMapping(headers, sampleRows){
   });
 
   // Preview
-  const preview = `<div style="margin-top:12px;background:var(--light);border-radius:8px;padding:12px;font-size:11px">
+  const preview = `<div id="col-mapping-preview" style="margin-top:12px;background:var(--light);border-radius:8px;padding:12px;font-size:11px">
     <strong>Preview (first 3 rows):</strong>
     <div style="overflow-x:auto;margin-top:6px">
       <table style="min-width:auto;font-size:10px">
